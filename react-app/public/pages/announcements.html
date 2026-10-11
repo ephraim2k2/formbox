@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements </title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        .announcement-layout {
+            display: flex;
+            gap: 32px;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .announcement-sidebar {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--btn-bg);
+            color: var(--text-dark);
+        }
+
+        .sidebar-item.active {
+            background: rgba(0, 82, 204, 0.1);
+            color: #0052cc;
+        }
+
+        body.dark-theme .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+
+        .announcement-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .template-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: #0052cc;
+            transform: translateY(-2px);
+        }
+
+        .template-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .template-desc {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s;
+        }
+
+        .history-item:hover {
+            border-color: #0052cc;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .history-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .status-sent {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 11px;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .composer-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0052cc;
+            box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231f2937%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px top 50%;
+            background-size: 12px auto;
+            padding-right: 40px;
+        }
+
+        body.dark-theme select.form-control {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23f8fafc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 160px;
+            line-height: 1.5;
+        }
+
+        .composer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 8px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-send {
+            background: #0052cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-send:hover {
+            background: #0043a8;
+            transform: translateY(-1px);
+        }
+
+        .btn-draft {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-draft:hover {
+            background: var(--btn-hover);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo"
+                style="display: flex; align-items: center; gap: 8px; font-size: 29px; font-weight: 700; letter-spacing: -1px;  padding: 6px 16px 6px 12px; ">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 32px; height: 32px;">
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div style="display: flex;">
+                    <span style="color: #0052cc;">form</span><span style="color: #ffcc00;">box</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link" style="text-decoration: none; color: inherit;">Dashboard</a>
+                <a href="forms.html" class="nav-link" style="text-decoration: none; color: inherit;">Forms</a>
+                
+                <div class="nav-dropdown">
+                    <div class="nav-link" id="nav-applications" style="display: flex; align-items: center; gap: 4px;">Applications <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></div>
+                    <div class="nav-dropdown-content">
+                        <a href="completed-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Completed Applications</div>
+                                <div class="mega-subtitle">Successfully submitted forms</div>
+                            </div>
+                        </a>
+                        <a href="incomplete-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Incomplete Applications</div>
+                                <div class="mega-subtitle">Forms saved as drafts</div>
+                            </div>
+                        </a>
+                        <a href="exam-slip.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <i data-lucide="ticket" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Exam Slips</div>
+                                <div class="mega-subtitle">Generate & print exam slips</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="requery.html" class="nav-link" style="text-decoration: none; color: inherit;">Payments</a>
+                <a href="announcements.html" class="nav-link active" style="text-decoration: none;">Announcement</a>
+                <a href="result.html" class="nav-link" style="text-decoration: none; color: inherit;">Results</a>
+            </div>
+            
+            <div class="user-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px; display: none;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                </button>
+                <a href="settings.html" class="user-avatar" style="text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="width: 24px; height: 24px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Header Content -->
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1 id="pageTitle">New Announcement</h1>
+                    <h2 id="pageSubtitle">Communicate directly with your applicant groups</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="announcement-layout">
+
+            <!-- Sidebar -->
+            <div class="announcement-sidebar">
+                <div class="sidebar-item active" onclick="switchTab('compose', this)">
+                    <i data-lucide="edit-3" style="width: 18px; height: 18px;"></i> Compose
+                </div>
+                <div class="sidebar-item" onclick="switchTab('templates', this)">
+                    <i data-lucide="layout-template" style="width: 18px; height: 18px;"></i> Templates
+                </div>
+                <div class="sidebar-item" onclick="switchTab('history', this)">
+                    <i data-lucide="history" style="width: 18px; height: 18px;"></i> History
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="announcement-content">
+
+                <!-- Tab: Compose -->
+                <div id="tab-compose" class="tab-pane active">
+                    <div class="composer-container" id="composerCard">
+
+                        <div class="form-group">
+                            <label for="audience">Target Audience</label>
+                            <select id="audience" class="form-control">
+                                <option value="" disabled selected>Select who will receive this message...</option>
+                                <option value="all">All Candidates</option>
+                                <option value="admitted">Admitted Candidates</option>
+                                <option value="pending">Pending Reviews</option>
+                                <option value="rejected">Rejected Candidates</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Announcement Subject</label>
+                            <input type="text" id="subject" class="form-control"
+                                placeholder="E.g., Important update regarding your application status">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message Body</label>
+                            <textarea id="message" class="form-control"
+                                placeholder="Write your announcement here..."></textarea>
+                        </div>
+
+                        <div class="composer-actions">
+                            <button class="btn-secondary">Save as Draft</button>
+                            <button class="btn-primary">
+                                <i data-lucide="send" style="width: 18px; height: 18px;"></i> Send Announcement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Tab: Templates -->
+            <div id="tab-templates" class="tab-pane">
+                <div class="template-grid">
+                    <div class="template-card" onclick="openTemplateModal('Application Status Update', 'pending', 'Update on your Application Status', 'Dear Candidate,\n\nYour application has moved to the next stage of our review process. We will keep you informed of any further updates.\n\nBest regards,\nAdmissions Team')">
+                        <div class="template-title">Application Status Update</div>
+                        <div class="template-desc">Standard template for notifying users that their application has
+                            moved to the next stage.</div>
+                    </div>
+                    <div class="template-card" onclick="openTemplateModal('Missing Documents', 'pending', 'Action Required: Missing Documents', 'Dear Candidate,\n\nWe noticed that your application is missing some required documents. Please log in to your portal and upload them as soon as possible.\n\nBest regards,\nAdmissions Team')">
+                        <div class="template-title">Missing Documents</div>
+                        <div class="template-desc">Template for requesting additional files from pending or incomplete
+                            applicants.</div>
+                    </div>
+                    <div class="template-card" onclick="openTemplateModal('Payment Reminder', 'pending', 'Reminder: Complete your application fee', 'Dear Candidate,\n\nThis is a friendly reminder that your application fee is still pending. Please complete the payment to finalize your application submission.\n\nBest regards,\nAdmissions Team')">
+                        <div class="template-title">Payment Reminder</div>
+                        <div class="template-desc">Friendly reminder for candidates who haven't completed their
+                            application fee payment.</div>
+                    </div>
+                    <div class="template-card" onclick="openTemplateModal('Welcome / Onboarding', 'admitted', 'Welcome to Roseville Academy!', 'Dear Candidate,\n\nCongratulations! We are thrilled to welcome you to our upcoming cohort. Below you will find the next steps for your onboarding process...\n\nBest regards,\nAdmissions Team')">
+                        <div class="template-title">Welcome / Onboarding</div>
+                        <div class="template-desc">Welcome message sent to newly admitted candidates containing next
+                            steps.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: History -->
+            <div id="tab-history" class="tab-pane">
+                <div class="history-list">
+                    <div class="history-item">
+                        <div>
+                            <div class="history-title">Welcome to the Fall 2026 Cohort!</div>
+                            <div class="history-meta">
+                                <span>Target: Admitted Candidates</span>
+                                <span>•</span>
+                                <span>Sent: Oct 2, 2026 (10:00 AM)</span>
+                            </div>
+                        </div>
+                        <div class="status-sent">Sent (420)</div>
+                    </div>
+                    <div class="history-item">
+                        <div>
+                            <div class="history-title">Action Required: Upload Missing Documents</div>
+                            <div class="history-meta">
+                                <span>Target: Pending Reviews</span>
+                                <span>•</span>
+                                <span>Sent: Sep 28, 2026 (2:15 PM)</span>
+                            </div>
+                        </div>
+                        <div class="status-sent">Sent (85)</div>
+                    </div>
+                    <div class="history-item">
+                        <div>
+                            <div class="history-title">System Maintenance Notice</div>
+                            <div class="history-meta">
+                                <span>Target: All Candidates</span>
+                                <span>•</span>
+                                <span>Sent: Sep 15, 2026 (9:00 AM)</span>
+                            </div>
+                        </div>
+                        <div class="status-sent">Sent (2,104)</div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Close announcement-content -->
+    </div> <!-- Close announcement-layout -->
+    </div> <!-- Close dashboard-container -->
+
+    <!-- Template Preview Modal -->
+    <div class="modal-overlay" id="templateModalOverlay" onclick="closeTemplateModal(event)">
+        <div class="create-form-modal" id="templateModal" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Preview Template</h3>
+                <button class="close-btn" onclick="closeTemplateModal()">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Target Audience</label>
+                    <select id="modalAudience" class="form-control">
+                        <option value="all">All Candidates</option>
+                        <option value="admitted">Admitted Candidates</option>
+                        <option value="pending">Pending Reviews</option>
+                        <option value="rejected">Rejected Candidates</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Announcement Subject</label>
+                    <input type="text" id="modalSubject" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Message Body</label>
+                    <textarea id="modalMessage" class="form-control" style="min-height: 150px;"></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button class="btn-secondary" onclick="closeTemplateModal()">Cancel</button>
+                    <button class="btn-primary" onclick="useTemplate()">Use Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        // Check local storage for dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.moon-icon').style.display = 'none';
+                document.querySelector('.sun-icon').style.display = 'block';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+            // Toggle icons
+            document.querySelector('.moon-icon').style.display = isDark ? 'none' : 'block';
+            document.querySelector('.sun-icon').style.display = isDark ? 'block' : 'none';
+        }
+
+        function switchTab(tabId, element) {
+            // Update active state on sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            // Hide all tabs and show selected
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Update Header titles dynamically
+            const title = document.getElementById('pageTitle');
+            const subtitle = document.getElementById('pageSubtitle');
+
+            if (tabId === 'compose') {
+                title.innerHTML = 'New Announcement';
+                subtitle.innerHTML = 'Communicate directly with your applicant groups';
+            } else if (tabId === 'templates') {
+                title.innerHTML = 'Saved Templates';
+                subtitle.innerHTML = 'Use pre-written templates to save time';
+            } else if (tabId === 'history') {
+                title.innerHTML = 'Announcement History';
+                subtitle.innerHTML = 'View previously sent announcements';
+            }
+        }
+
+        function openTemplateModal(title, audience, subject, body) {
+            document.getElementById('modalAudience').value = audience || 'all';
+            document.getElementById('modalSubject').value = subject || title;
+            document.getElementById('modalMessage').value = body || '';
+            
+            const overlay = document.getElementById('templateModalOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
+        }
+
+        function closeTemplateModal(e) {
+            if (e && e.target !== document.getElementById('templateModalOverlay') && !e.target.closest('.close-btn')) return;
+            const overlay = document.getElementById('templateModalOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        function useTemplate() {
+            // Populate compose tab inputs
+            document.getElementById('audience').value = document.getElementById('modalAudience').value;
+            document.getElementById('subject').value = document.getElementById('modalSubject').value;
+            document.getElementById('message').value = document.getElementById('modalMessage').value;
+            
+            // Close modal
+            closeTemplateModal();
+            
+            // Switch to compose tab
+            const composeTabItem = document.querySelectorAll('.sidebar-item')[0];
+            switchTab('compose', composeTabItem);
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // GSAP Page Load Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+
+            gsap.set('.navbar', { y: -20, opacity: 0 });
+            gsap.set('.header-content', { y: 20, opacity: 0 });
+            gsap.set('#composerCard', { y: 30, opacity: 0 });
+
+            tl.to('.navbar', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' })
+                .to('.header-content', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+                .to('#composerCard', { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.2');
+        });
+    </script>
+</body>
+
+</html>

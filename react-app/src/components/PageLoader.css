@@ -1,0 +1,46 @@
+.fb-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.fb-loader.is-visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.fb-loader svg {
+  width: 72px;
+  height: 72px;
+  overflow: visible;
+  filter: drop-shadow(0 8px 18px rgba(0, 82, 204, 0.25));
+}
+.fb-layer {
+  animation: fb-stack 1.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+.fb-l1 { animation-delay: 0s; }
+.fb-l2 { animation-delay: 0.12s; }
+.fb-l3 { animation-delay: 0.24s; }
+
+@keyframes fb-stack {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  40% { transform: translateY(-3px); opacity: 0.85; }
+  60% { transform: translateY(0.6px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fb-layer { animation: none; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

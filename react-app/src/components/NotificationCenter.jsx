@@ -1,0 +1,126 @@
+import React, { useState } from 'react';
+import { Bell, CheckCheck, Clock, CheckCircle, AlertTriangle, ArrowRight, X } from 'lucide-react';
+import './NotificationCenter.css';
+
+export default function NotificationCenter({ isOpen, onClose }) {
+  const [filter, setFilter] = useState('all');
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: 'New Application Submitted',
+      description: 'David Olamide submitted an application for 2026 Academic Session.',
+      time: '2 mins ago',
+      type: 'success',
+      unread: true
+    },
+    {
+      id: 2,
+      title: 'Bank Payment Verified',
+      description: 'Payment of ₦25,000 via Paystack confirmed for Sarah Johnson.',
+      time: '24 mins ago',
+      type: 'payment',
+      unread: true
+    },
+    {
+      id: 3,
+      title: 'Exam Hall Capacity Alert',
+      description: 'Lagos Tech Hub has reached 90% capacity (225 / 250 seats).',
+      time: '2 hours ago',
+      type: 'warning',
+      unread: true
+    },
+    {
+      id: 4,
+      title: 'System Security Update',
+      description: 'Two-factor authentication was activated for admin account.',
+      time: '1 day ago',
+      type: 'info',
+      unread: false
+    }
+  ]);
+
+  const markAllRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, unread: false })));
+  };
+
+  const filtered = filter === 'unread' 
+    ? notifications.filter(n => n.unread) 
+    : notifications;
+
+  const unreadCount = notifications.filter(n => n.unread).length;
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="notif-dropdown">
+      <div className="notif-header">
+        <div className="notif-title-row">
+          <div className="notif-title">
+            <Bell size={16} />
+            <span>Notifications</span>
+            {unreadCount > 0 && (
+              <span className="notif-count-badge">{unreadCount} new</span>
+            )}
+          </div>
+          <button className="notif-close-btn" onClick={onClose}>
+            <X size={15} />
+          </button>
+        </div>
+
+        <div className="notif-actions-row">
+          <div className="notif-tabs">
+            <button 
+              className={`notif-tab ${filter === 'all' ? 'active' : ''}`}
+              onClick={() => setFilter('all')}
+            >
+              All
+            </button>
+            <button 
+              className={`notif-tab ${filter === 'unread' ? 'active' : ''}`}
+              onClick={() => setFilter('unread')}
+            >
+              Unread ({unreadCount})
+            </button>
+          </div>
+          {unreadCount > 0 && (
+            <button className="notif-read-btn" onClick={markAllRead}>
+              <CheckCheck size={14} /> Mark all read
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="notif-body">
+        {filtered.length === 0 ? (
+          <div className="notif-empty">
+            <CheckCircle size={32} className="notif-empty-icon" />
+            <p>You're all caught up!</p>
+          </div>
+        ) : (
+          filtered.map(item => (
+            <div 
+              key={item.id} 
+              className={`notif-item ${item.unread ? 'unread' : ''}`}
+              onClick={() => {
+                setNotifications(notifications.map(n => n.id === item.id ? { ...n, unread: false } : n));
+              }}
+            >
+              <div className={`notif-icon-box ${item.type}`}>
+                {item.type === 'success' && <CheckCircle size={15} />}
+                {item.type === 'payment' && <Clock size={15} />}
+                {item.type === 'warning' && <AlertTriangle size={15} />}
+                {item.type === 'info' && <Bell size={15} />}
+              </div>
+              <div className="notif-content">
+                <div className="notif-item-title">{item.title}</div>
+                <div className="notif-item-desc">{item.description}</div>
+                <div className="notif-item-time">{item.time}</div>
+              </div>
+              {item.unread && <span className="notif-unread-dot" />}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

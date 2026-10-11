@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Portal - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f2f4f8;
+            color: #0f172a;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 24px 32px 48px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .portal-wrapper {
+            max-width: 1360px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        /* --- Standalone Candidate Navbar --- */
+        .candidate-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .brand-infinity {
+            width: 48px;
+            height: 38px;
+            border-radius: 14px;
+            background: #0f172a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .brand-infinity:hover {
+            transform: scale(1.04);
+        }
+
+        .nav-pills {
+            display: inline-flex;
+            align-items: center;
+            background: #eceff4;
+            border-radius: 30px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .nav-pill {
+            border: none;
+            background: transparent;
+            padding: 8px 24px;
+            border-radius: 22px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .nav-pill:hover {
+            color: #0f172a;
+        }
+
+        .nav-pill.active {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f4f9;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 9px;
+            right: 10px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 1.5px solid #ffffff;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* --- Greeting Header Row --- */
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+            margin-bottom: 2px;
+        }
+
+        .greeting-title {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+        }
+
+        .btn-black-pill {
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+        }
+
+        .btn-black-pill:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.2);
+        }
+
+        /* --- Filter & Search Sub-bar --- */
+        .subbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sub-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .sub-pill-btn:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .filter-group-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-pill-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 22px;
+            padding: 8px 18px;
+            width: 240px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .search-pill-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 13px;
+            color: #0f172a;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .search-pill-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* --- Main 3-Column Layout --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 1160px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dash-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Generic Card */
+        .dash-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.02);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-heading {
+            font-size: 17.5px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-add-card-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #0f172a;
+            background: #f1f4f9;
+            border: none;
+            border-radius: 16px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .btn-add-card-tag:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-link-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            transition: color 0.15s ease;
+        }
+
+        .btn-link-action:hover {
+            color: #0f172a;
+        }
+
+        /* --- Column 1: Dual-tone Virtual Card --- */
+        .virtual-card {
+            position: relative;
+            width: 100%;
+            height: 184px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.16);
+            display: flex;
+            background: #f8fafc;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .virtual-card-left {
+            width: 30%;
+            background: linear-gradient(135deg, #6e56f8 0%, #8c72ff 100%);
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-circles {
+            display: flex;
+            align-items: center;
+        }
+
+        .circ {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+
+        .circ.solid {
+            background: rgba(255, 255, 255, 0.95);
+            margin-right: -7px;
+            z-index: 1;
+        }
+
+        .circ.alpha {
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        .card-num-sub {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.05em;
+            font-family: monospace;
+        }
+
+        .virtual-card-right {
+            flex: 1;
+            background: #f5f6fa;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .visa-brand {
+            font-size: 20px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -0.05em;
+            color: #0f172a;
+        }
+
+        .card-num-main {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: 0.06em;
+            font-family: monospace;
+        }
+
+        .card-exp {
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        /* Net Worth Row */
+        .net-worth-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .net-worth-lbl {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .net-worth-num {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Accounts Tree */
+        .acc-tree-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tree-parent-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tree-title-flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .tree-sum {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .tree-sub-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-left: 22px;
+            margin-top: 4px;
+        }
+
+        .tree-child-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+            color: #64748b;
+        }
+
+        .tree-child-val {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* --- Column 2: Spending Plan / Status Pillars --- */
+        .spend-stat-box {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .spend-big-metric {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .spend-subtext {
+            font-size: 12px;
+            color: #64748b;
+            max-width: 90px;
+            line-height: 1.25;
+        }
+
+        .pillars-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 18px;
+            height: 148px;
+            padding-top: 10px;
+        }
+
+        .pillar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .pillar-col-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .pillar-bar {
+            width: 100%;
+            border-radius: 12px 12px 4px 4px;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .pillar-col:hover .pillar-bar {
+            transform: translateY(-4px);
+            opacity: 0.92;
+        }
+
+        .pillar-bar.solid-black {
+            background: #0f172a;
+            height: 96px;
+        }
+
+        .pillar-bar.vibrant-purple {
+            background: #7048e8;
+            height: 74px;
+        }
+
+        .pillar-bar.hatched {
+            background: repeating-linear-gradient(
+                45deg,
+                #eceff4,
+                #eceff4 6px,
+                #f8fafc 6px,
+                #f8fafc 12px
+            );
+            border: 1px dashed #cbd5e1;
+            height: 52px;
+        }
+
+        .badge-bar-val {
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+
+        /* Income Bottom Card */
+        .income-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .income-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .dropdown-pill-sm {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .income-metric-large {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .badge-inc-green {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .spline-wrapper {
+            width: 100%;
+            height: 64px;
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .pin-tag {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* --- Column 3: Gauge & Purple Card --- */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+        }
+
+        .gauge-svg-box {
+            position: relative;
+            width: 220px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .gauge-mid-text {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gauge-num {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .gauge-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .gauge-legend-flex {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .dot-marker {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-marker.coral { background: #ff5722; }
+        .dot-marker.amber { background: #f59e0b; }
+        .dot-marker.indigo { background: #6366f1; }
+
+        /* Vibrant Purple Card */
+        .fitness-purple-card {
+            background: linear-gradient(135deg, #6e56f8 0%, #8c72ff 100%);
+            border-radius: 24px;
+            padding: 24px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 184px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(110, 86, 248, 0.28);
+        }
+
+        .fitness-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .fitness-title {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .fitness-pill-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .fitness-content {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .fitness-num {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .fitness-down-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .fitness-sine-box {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            z-index: 1;
+        }
+
+        .fitness-date-pin {
+            position: absolute;
+            bottom: 34px;
+            right: 50px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+            z-index: 3;
+        }
+
+        /* --- Notice Board Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10005;
+            padding: 16px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 540px;
+            max-width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="portal-wrapper">
+
+        <!-- Standalone Navbar (Independent of Admin Nav) -->
+        <header class="candidate-nav">
+            <!-- Capsule Brand Logo -->
+            <div class="nav-brand" onclick="window.location.reload()">
+                <div class="brand-infinity">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18.178 8c-1.396 0-2.617.72-3.324 1.797L12 14.167 9.146 9.797C8.439 8.72 7.218 8 5.822 8 3.71 8 2 9.79 2 12s1.71 4 3.822 4c1.396 0 2.617-.72 3.324-1.797L12 9.833l2.854 4.37c.707 1.077 1.928 1.797 3.324 1.797 2.112 0 3.822-1.79 3.822-4s-1.71-4-3.822-4zm-12.356 6c-1.005 0-1.822-.897-1.822-2s.817-2 1.822-2c.677 0 1.272.41 1.574 1.025L8.03 12.002l-.634.975c-.302.615-.897 1.023-1.574 1.023zm12.356 0c-.677 0-1.272-.408-1.574-1.023l-.634-.977.634-.977c.302-.615.897-1.023 1.574-1.023 1.005 0 1.822.897 1.822 2s-.817 2-1.822 2z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Floating Nav Pills -->
+            <nav class="nav-pills">
+                <button class="nav-pill" onclick="setActiveTab(this)">Courses</button>
+                <button class="nav-pill active" onclick="setActiveTab(this)">Dashboard</button>
+                <button class="nav-pill" onclick="openNoticeModal(); setActiveTab(this);">Schedule</button>
+                <button class="nav-pill" onclick="setActiveTab(this)">Support</button>
+            </nav>
+
+            <!-- Actions: Gear, Bell with Red Dot, Avatar -->
+            <div class="nav-actions">
+                <button class="icon-btn" title="Settings" onclick="alert('Candidate Portal Settings')">
+                    <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+                </button>
+                <button class="icon-btn" title="Notifications & Announcements" onclick="openNoticeModal()">
+                    <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <div class="user-avatar" title="William - Candidate Profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80" alt="William">
+                </div>
+            </div>
+        </header>
+
+        <!-- Greeting Header Row -->
+        <section class="header-row">
+            <h1 class="greeting-title">Good morning, William!</h1>
+            <button class="btn-black-pill" onclick="openPaymentModal()">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span>New payment</span>
+            </button>
+        </section>
+
+        <!-- Sub-bar (Filter pills & Search) -->
+        <section class="subbar">
+            <div class="filter-group-left">
+                <button class="sub-pill-btn">
+                    <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;"></i>
+                    <span>Filter</span>
+                </button>
+                <button class="sub-pill-btn">
+                    <span>Last month</span>
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                </button>
+                <button class="sub-pill-btn" onclick="alert('Exporting slip...')">
+                    <i data-lucide="file-down" style="width: 14px; height: 14px;"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+
+            <div class="filter-group-right">
+                <div class="search-pill-box">
+                    <i data-lucide="search" style="width: 15px; height: 15px; color: #94a3b8;"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+                <button class="icon-btn" title="Options">
+                    <i data-lucide="more-vertical" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main 3-Column Grid Layout -->
+        <main class="dashboard-grid">
+
+            <!-- COLUMN 1: My accounts -->
+            <div class="dash-column">
+                <div class="dash-card">
+                    <div class="card-header-flex">
+                        <h2 class="card-heading">My accounts</h2>
+                        <button class="btn-add-card-tag" onclick="alert('Add card modal')">
+                            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
+                            <span>Add card</span>
+                        </button>
+                    </div>
+
+                    <!-- Dual-Tone Virtual Card -->
+                    <div class="virtual-card">
+                        <div class="virtual-card-left">
+                            <div class="card-circles">
+                                <div class="circ solid"></div>
+                                <div class="circ alpha"></div>
+                            </div>
+                            <div class="card-num-sub">••••6720</div>
+                        </div>
+
+                        <div class="virtual-card-right">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span class="visa-brand">VISA</span>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round">
+                                    <path d="M8.5 16.5a5 5 0 0 1 0-9" />
+                                    <path d="M12 19a8.5 8.5 0 0 0 0-14" />
+                                    <path d="M15.5 21.5a12 12 0 0 0 0-19" />
+                                </svg>
+                            </div>
+                            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                                <span class="card-num-main">***4329</span>
+                                <span class="card-exp">09/26</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Net worth row -->
+                    <div class="net-worth-box">
+                        <div class="net-worth-lbl">
+                            <i data-lucide="credit-card" style="width: 17px; height: 17px; color: #64748b;"></i>
+                            <span>Net worth</span>
+                        </div>
+                        <div class="net-worth-num">$16,531.54</div>
+                    </div>
+
+                    <!-- Tree list -->
+                    <div class="acc-tree-group">
+                        <!-- Banking -->
+                        <div class="tree-parent-item" onclick="toggleTree('bankingTree', this)">
+                            <div class="tree-title-flex">
+                                <i data-lucide="chevron-right" style="width: 14px; height: 14px;" class="tree-chevron"></i>
+                                <span>Banking</span>
+                            </div>
+                            <div class="tree-sum">$9,681.49</div>
+                        </div>
+                        <div id="bankingTree" class="tree-sub-list" style="display: none;">
+                            <div class="tree-child-row">
+                                <span>Primary checking</span>
+                                <span class="tree-child-val">$7,200.00</span>
+                            </div>
+                            <div class="tree-child-row">
+                                <span>College reserve</span>
+                                <span class="tree-child-val">$2,481.49</span>
+                            </div>
+                        </div>
+
+                        <!-- Cash & checking -->
+                        <div class="tree-parent-item" onclick="toggleTree('cashTree', this)">
+                            <div class="tree-title-flex">
+                                <i data-lucide="chevron-down" style="width: 14px; height: 14px;" class="tree-chevron"></i>
+                                <span>Cash & checking</span>
+                            </div>
+                            <div class="tree-sum">$7,583.00</div>
+                        </div>
+                        <div id="cashTree" class="tree-sub-list">
+                            <div class="tree-child-row">
+                                <span>WISE</span>
+                                <span class="tree-child-val">$5,299.52</span>
+                            </div>
+                            <div class="tree-child-row">
+                                <span>Savings goal</span>
+                                <span class="tree-child-val">$958.00</span>
+                            </div>
+                            <div class="tree-child-row">
+                                <span>Available balance</span>
+                                <span class="tree-child-val">$7,602.15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: Spending plan (Notice Board) + Income -->
+            <div class="dash-column">
+                <!-- Spending plan Card -->
+                <div class="dash-card">
+                    <div class="card-header-flex">
+                        <h2 class="card-heading">Spending plan</h2>
+                        <button class="btn-link-action" onclick="openNoticeModal()">
+                            <span>View details</span>
+                            <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="spend-stat-box">
+                        <span class="spend-big-metric">$37k</span>
+                        <span class="spend-subtext">Expenses for the month</span>
+                    </div>
+
+                    <!-- 3 Status Pillars (Representing Admin Announcements) -->
+                    <div class="pillars-container">
+                        <!-- Pillar 1: Solid Black -->
+                        <div class="pillar-col" onclick="viewAnnouncement(2)">
+                            <span class="pillar-col-label">$22.548</span>
+                            <div class="pillar-bar solid-black"></div>
+                        </div>
+
+                        <!-- Pillar 2: Purple +10% -->
+                        <div class="pillar-col" onclick="viewAnnouncement(1)">
+                            <span class="pillar-col-label">$12.432</span>
+                            <div class="pillar-bar vibrant-purple">
+                                <span class="badge-bar-val">+10%</span>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 3: Hatched Stripes -->
+                        <div class="pillar-col" onclick="viewAnnouncement(3)">
+                            <span class="pillar-col-label">$16.864</span>
+                            <div class="pillar-bar hatched"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Income Card -->
+                <div class="dash-card">
+                    <div class="income-header">
+                        <span class="income-title">Income</span>
+                        <div class="dropdown-pill-sm">
+                            <span>Past 30 days</span>
+                            <i data-lucide="chevron-down" style="width: 13px; height: 13px;"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="income-metric-large">$3,800</div>
+                    </div>
+
+                    <div>
+                        <span class="badge-inc-green">
+                            <i data-lucide="arrow-up-right" style="width: 13px; height: 13px;"></i>
+                            <span>16.4%</span>
+                        </span>
+                    </div>
+
+                    <!-- Smooth purple sparkline -->
+                    <div class="spline-wrapper">
+                        <svg width="100%" height="70" viewBox="0 0 320 70" fill="none" preserveAspectRatio="none" style="overflow: visible;">
+                            <path d="M 0,65 C 60,65 110,60 160,42 C 210,24 250,15 320,10" stroke="#8b5cf6" stroke-width="2.5" fill="none" />
+                            <circle cx="175" cy="38" r="4" fill="#8b5cf6" stroke="#ffffff" stroke-width="2" />
+                        </svg>
+                        <div class="pin-tag" style="left: 50%; top: 14px;">Feb 12</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: Gauge Card + Vibrant Purple Card -->
+            <div class="dash-column">
+                <!-- Semi-circle Gauge Card -->
+                <div class="dash-card" style="padding-bottom: 20px;">
+                    <div class="gauge-container">
+                        <div class="gauge-svg-box">
+                            <svg width="220" height="120" viewBox="0 0 220 120">
+                                <!-- Arc 1: Red-Orange -->
+                                <path d="M 22,110 A 88,88 0 0 1 80,30" fill="none" stroke="#ff5722" stroke-width="11" stroke-linecap="round"/>
+                                <!-- Arc 2: Yellow -->
+                                <path d="M 94,25 A 88,88 0 0 1 142,26" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="round"/>
+                                <!-- Arc 3: Purple -->
+                                <path d="M 156,32 A 88,88 0 0 1 198,110" fill="none" stroke="#6366f1" stroke-width="11" stroke-linecap="round"/>
+                            </svg>
+
+                            <div class="gauge-mid-text">
+                                <div class="gauge-num">$4,682</div>
+                                <div class="gauge-sub">Available</div>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="gauge-legend-flex">
+                            <div class="legend-item">
+                                <span class="dot-marker coral"></span>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot-marker amber"></span>
+                                <span>Planned</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot-marker indigo"></span>
+                                <span>Other</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vibrant Purple Card (Fitness first) -->
+                <div class="fitness-purple-card">
+                    <div class="fitness-top-row">
+                        <span class="fitness-title">Fitness first</span>
+                        <div class="fitness-pill-dropdown">
+                            <span>Past 30 days</span>
+                            <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>
+                        </div>
+                    </div>
+
+                    <div class="fitness-content">
+                        <span class="fitness-num">$89</span>
+                        <span class="fitness-down-badge">
+                            <i data-lucide="arrow-down-right" style="width: 13px; height: 13px;"></i>
+                            <span>21.8%</span>
+                        </span>
+                    </div>
+
+                    <div class="fitness-date-pin">Feb 18</div>
+
+                    <div class="fitness-sine-box">
+                        <svg width="100%" height="80" viewBox="0 0 320 80" fill="none" preserveAspectRatio="none" style="overflow: visible;">
+                            <path d="M 0,70 C 80,70 140,68 180,50 C 220,32 250,20 320,18" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" fill="none" />
+                            <circle cx="255" cy="22" r="4" fill="#ffffff" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Admin Notice Board Modal -->
+        <div id="noticeModal" class="modal-overlay" onclick="closeNoticeModal()">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="megaphone" style="width: 18px; height: 18px;"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 17px; font-weight: 700;">Admin Notice Board</h3>
+                            <p style="margin: 0; font-size: 12px; color: #64748b;">Announcements and official communications</p>
+                        </div>
+                    </div>
+                    <button class="icon-btn" onclick="closeNoticeModal()" style="width: 32px; height: 32px;">
+                        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+
+                <div id="noticeDetailContent" style="display: flex; flex-direction: column; gap: 14px;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div id="paymentModal" class="modal-overlay" onclick="closePaymentModal()">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 14px;">
+                    <h3 style="margin: 0; font-size: 17px; font-weight: 700;">Make New Payment</h3>
+                    <button class="icon-btn" onclick="closePaymentModal()" style="width: 32px; height: 32px;">
+                        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Select Fee Category</label>
+                    <select style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; font-family: inherit;">
+                        <option>2026 Session Acceptance Fee ($500.00)</option>
+                        <option>CBT Examination Screening Fee ($50.00)</option>
+                        <option>Academic Document Verification ($35.00)</option>
+                    </select>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                        <button class="sub-pill-btn" onclick="closePaymentModal()">Cancel</button>
+                        <button class="btn-black-pill" onclick="alert('Payment successful!'); closePaymentModal();">Confirm & Pay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const notices = {
+            1: {
+                category: "Exam Schedule",
+                badge: "+10% Weight",
+                date: "Oct 10, 2026 • 09:30 AM",
+                title: "2026 CBT Screening Examination Schedule & Venue Allocation",
+                content: "Please be informed that the 2026 Academic Session Screening Examination has been officially scheduled for Sunday, November 15, 2026. All candidates are required to print their official Exam Slip, which includes venue hall allocations, biometric seating numbers, and examination instructions."
+            },
+            2: {
+                category: "Verification",
+                badge: "Urgent",
+                date: "Oct 05, 2026 • 02:15 PM",
+                title: "Action Required: Verification of Uploaded Birth & Academic Documents",
+                content: "The admissions processing office is currently concluding digital verification of submitted credentials. If your application status reflects 'Pending Document Verification', please ensure high-resolution scans of your original birth certificate and secondary transcript are uploaded promptly."
+            },
+            3: {
+                category: "Advisory",
+                badge: "General Notice",
+                date: "Oct 02, 2026 • 10:00 AM",
+                title: "General Orientation & Matriculation Preparation Briefing",
+                content: "We welcome all prospective students and parents to the centralized Formbox portal. Here, you can easily track your real-time application processing, review administrative notices, download transaction receipts, and verify official examination dates."
+            }
+        };
+
+        function setActiveTab(el) {
+            document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function toggleTree(id, el) {
+            const list = document.getElementById(id);
+            const isHidden = list.style.display === 'none';
+            list.style.display = isHidden ? 'flex' : 'none';
+            const icon = el.querySelector('.tree-chevron');
+            if (icon) {
+                icon.setAttribute('data-lucide', isHidden ? 'chevron-down' : 'chevron-right');
+                lucide.createIcons();
+            }
+        }
+
+        function openNoticeModal() {
+            viewAnnouncement(1);
+        }
+
+        function viewAnnouncement(id) {
+            const n = notices[id] || notices[1];
+            const container = document.getElementById('noticeDetailContent');
+            container.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <span style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: #6366f1; color: #fff;">
+                        ${n.category} • ${n.badge}
+                    </span>
+                    <span style="font-size: 12px; color: #64748b;">${n.date}</span>
+                </div>
+                <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.4;">
+                    ${n.title}
+                </h4>
+                <div style="background: #f8fafc; padding: 16px; border-radius: 12px; font-size: 13.5px; line-height: 1.6; color: #334155; border: 1px solid rgba(0,0,0,0.05);">
+                    ${n.content}
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+                    <button class="btn-black-pill" onclick="closeNoticeModal()" style="padding: 8px 18px; font-size: 12.5px;">
+                        Acknowledge & Close
+                    </button>
+                </div>
+            `;
+            document.getElementById('noticeModal').classList.add('open');
+        }
+
+        function closeNoticeModal() {
+            document.getElementById('noticeModal').classList.remove('open');
+        }
+
+        function openPaymentModal() {
+            document.getElementById('paymentModal').classList.add('open');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('open');
+        }
+    </script>
+</body>
+
+</html>

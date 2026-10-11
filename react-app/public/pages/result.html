@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formbox Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo"
+                style="display: flex; align-items: center; gap: 8px; font-size: 29px; font-weight: 700; letter-spacing: -1px;  padding: 6px 16px 6px 12px; ">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 32px; height: 32px;">
+                    <!-- Top layer (blue outline) -->
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <!-- Middle layer (yellow outline) -->
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <!-- Bottom layer (blue outline) -->
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div style="display: flex;">
+                    <span style="color: #0052cc;">form</span><span style="color: #ffcc00;">box</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link" style="text-decoration: none; color: inherit;">Dashboard</a>
+                <a href="forms.html" class="nav-link" style="text-decoration: none; color: inherit;">Forms</a>
+                
+                <div class="nav-dropdown">
+                    <div class="nav-link" id="nav-applications" style="display: flex; align-items: center; gap: 4px;">Applications <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></div>
+                    <div class="nav-dropdown-content">
+                        <a href="completed-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Completed Applications</div>
+                                <div class="mega-subtitle">Successfully submitted forms</div>
+                            </div>
+                        </a>
+                        <a href="incomplete-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Incomplete Applications</div>
+                                <div class="mega-subtitle">Forms saved as drafts</div>
+                            </div>
+                        </a>
+                        <a href="exam-slip.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <i data-lucide="ticket" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Exam Slips</div>
+                                <div class="mega-subtitle">Generate & print exam slips</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="requery.html" class="nav-link" style="text-decoration: none; color: inherit;">Payments</a>
+                <a href="announcements.html" class="nav-link" style="text-decoration: none; color: inherit;">Announcement</a>
+                <a href="result.html" class="nav-link active" style="text-decoration: none;">Results</a>
+            </div>
+            
+            <div class="user-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px; display: none;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                </button>
+                <a href="settings.html" class="user-avatar" style="text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="width: 24px; height: 24px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        
+        <!-- Header Content -->
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1>Results & Messaging</h1>
+                    <h2>Manage results and communicate with candidates</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-content">
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px; grid-column: 1 / -1; width: 100%;">
+                
+                <!-- Upload Results Card -->
+                <div class="card" style="padding: 24px;">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="upload-cloud"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 16px; color: var(--text-dark);">Upload Results</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-light);">Upload candidate scores or admission status (CSV/Excel)</p>
+                            </div>
+                        </div>
+                        <button style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: none; padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                            <i data-lucide="download" style="width: 16px; height: 16px;"></i> Download Template
+                        </button>
+                    </div>
+                    
+                    <div style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 32px; text-align: center; background: rgba(0,0,0,0.01); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.background='rgba(59,130,246,0.02)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.background='rgba(0,0,0,0.01)'">
+                        <i data-lucide="file-spreadsheet" style="width: 32px; height: 32px; color: var(--text-light); margin-bottom: 12px;"></i>
+                        <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px;">Click to browse or drag and drop</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Supported formats: .csv, .xlsx, .xls</div>
+                        
+                        <input type="file" style="display: none;" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                    </div>
+                    
+                    <button class="btn-primary" style="width: 100%; margin-top: 24px; justify-content: center;">
+                        <i data-lucide="upload"></i> Process Results & Send Auto-Messages
+                    </button>
+                </div>
+
+                <!-- Auto-Messaging Templates -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Admitted Template -->
+                    <div class="card" style="padding: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); color: #10b981; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="check-circle"></i>
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 16px; color: var(--text-dark);">Admitted Candidates</h3>
+                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-light);">Sent automatically upon upload</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px;">Message Content</label>
+                            <textarea class="form-input" rows="6" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; resize: vertical; box-sizing: border-box; line-height: 1.5; font-size: 13px;">Congratulations {{name}},
+
+We are pleased to inform you that you have been offered admission for the upcoming academic session. Please log in to your dashboard to view your admission letter and next steps.</textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Not Admitted Template -->
+                    <div class="card" style="padding: 24px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="x-circle"></i>
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 16px; color: var(--text-dark);">Not Admitted Candidates</h3>
+                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-light);">Sent automatically upon upload</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px;">Message Content</label>
+                            <textarea class="form-input" rows="6" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; resize: vertical; box-sizing: border-box; line-height: 1.5; font-size: 13px;">Dear {{name}},
+
+Thank you for your application. We regret to inform you that we are unable to offer you admission for the upcoming academic session. We wish you the very best in your future endeavors.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+
+        // Check local storage for dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.moon-icon').style.display = 'none';
+                document.querySelector('.sun-icon').style.display = 'block';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.querySelector('.moon-icon').style.display = isDark ? 'none' : 'block';
+            document.querySelector('.sun-icon').style.display = isDark ? 'block' : 'none';
+        }
+        
+        lucide.createIcons();
+    </script>
+</body>
+</html>

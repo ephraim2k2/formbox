@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formbox Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo"
+                style="display: flex; align-items: center; gap: 8px; font-size: 29px; font-weight: 700; letter-spacing: -1px;  padding: 6px 16px 6px 12px; ">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 32px; height: 32px;">
+                    <!-- Top layer (blue outline) -->
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <!-- Middle layer (yellow outline) -->
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <!-- Bottom layer (blue outline) -->
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div style="display: flex;">
+                    <span style="color: #0052cc;">form</span><span style="color: #ffcc00;">box</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active" style="text-decoration: none;">Dashboard</a>
+                <a href="forms.html" class="nav-link" style="text-decoration: none; color: inherit;">Forms</a>
+                
+                <div class="nav-dropdown">
+                    <div class="nav-link" id="nav-applications" style="display: flex; align-items: center; gap: 4px;">Applications <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></div>
+                    <div class="nav-dropdown-content">
+                        <a href="completed-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Completed Applications</div>
+                                <div class="mega-subtitle">Successfully submitted forms</div>
+                            </div>
+                        </a>
+                        <a href="incomplete-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Incomplete Applications</div>
+                                <div class="mega-subtitle">Forms saved as drafts</div>
+                            </div>
+                        </a>
+                        <a href="exam-slip.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <i data-lucide="ticket" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Exam Slips</div>
+                                <div class="mega-subtitle">Generate & print exam slips</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="requery.html" class="nav-link" style="text-decoration: none; color: inherit;">Payments</a>
+                <a href="announcements.html" class="nav-link" style="text-decoration: none; color: inherit;">Announcement</a>
+                <a href="result.html" class="nav-link" style="text-decoration: none; color: inherit;">Results</a>
+            </div>
+            
+            <div class="user-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px; display: none;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                </button>
+                <a href="settings.html" class="user-avatar" style="text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="width: 24px; height: 24px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Header Content -->
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1>Welcome Back, Admin <span class="wave">👋</span></h1>
+                    <h2>Dashboard overview and form analytics</h2>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-secondary" style="background: #000; color: #fff; border: none;" onclick="window.location.href='templates.html'">
+                    <i data-lucide="layout-template"></i> See all templates
+                </button>
+
+                <button class="btn-primary" onclick="openCreateFormModal()">
+                    <i data-lucide="file-plus"></i> Create new form
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- Main Content Grid -->
+        <div class="main-content">
+
+            <!-- Overview Card -->
+            <div class="card overview-card">
+                <div class="overview-header">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="font-size: 16px; font-weight: 600; color: var(--text-dark);">Traffic By Form
+                            </div>
+                            <span
+                                style="background: rgba(16, 185, 129, 0.12); color: #10b981; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                                <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i> +18.4%
+                            </span>
+                        </div>
+                        <div
+                            style="font-size: 12px; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                            <span>Total: <strong style="color: var(--text-dark); font-weight: 600;">24,850</strong>
+                                submissions</span>
+                            <span style="opacity: 0.4;">•</span>
+                            <span>April 2026</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; background: var(--btn-bg); padding: 3px; border-radius: 8px; gap: 2px;">
+                        <button class="metronic-tab active"
+                            style="padding: 6px 14px; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; background: var(--card-bg); color: var(--text-dark); cursor: pointer; transition: all 0.2s;">30D</button>
+                        <button class="metronic-tab"
+                            style="padding: 6px 14px; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; background: transparent; color: var(--text-light); cursor: pointer; transition: all 0.2s;">7D</button>
+                        <button class="metronic-tab"
+                            style="padding: 6px 14px; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; background: transparent; color: var(--text-light); cursor: pointer; transition: all 0.2s;">90D</button>
+                    </div>
+                </div>
+
+                <div class="chart-container" id="mainChartContainer" style="height: 200px; flex: 1;">
+                    <!-- Background Grid Lines -->
+                    <div class="chart-grid-lines">
+                        <div class="chart-grid-line"></div>
+                        <div class="chart-grid-line"></div>
+                        <div class="chart-grid-line"></div>
+                        <div class="chart-grid-line"></div>
+                    </div>
+
+                    <!-- Bars Wrapper -->
+                    <div class="chart-bars-wrapper" id="chartBarsWrapper"></div>
+
+                    <!-- Dynamic Chart Tooltip -->
+                    <div class="chart-tooltip" id="chartTooltip"
+                        style="opacity: 0; pointer-events: none; transition: opacity 0.2s, left 0.2s; left: 50%;">
+                        <div class="tooltip-amount">
+                            <span id="tooltipValue">0</span>
+                            <div class="tooltip-growth" id="tooltipGrowthBadge">
+                                <i data-lucide="arrow-up-right" id="tooltipGrowthIcon"
+                                    style="width: 12px; height: 12px;"></i> <span id="tooltipGrowthText">0%</span>
+                            </div>
+                        </div>
+                        <div class="tooltip-date" id="tooltipDate">Date</div>
+                    </div>
+                </div>
+
+                <div class="chart-labels" style="justify-content: space-around;">
+                    <span>Admission</span>
+                    <span>Registration</span>
+                    <span>Job App</span>
+                    <span>Scholarship</span>
+                    <span>Survey</span>
+                    <span>Feedback</span>
+                    <span>Leave</span>
+                </div>
+            </div>
+
+            <!-- Categories Grid (4 cards) -->
+            <div class="categories-grid">
+                <!-- Application Form -->
+                <div class="category-card">
+                    <div class="cat-header">
+                        <div class="cat-title">Application Form</div>
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;"><i data-lucide="file-text" class="cat-icon" style="width: 20px; height: 20px; color: #64748b;"></i></div>
+                    </div>
+                    <div>
+                        <div class="cat-amount">1</div>
+                    </div>
+                </div>
+
+                <!-- Received Applications -->
+                <div class="category-card">
+                    <div class="cat-header">
+                        <div class="cat-title">Received Applications</div>
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center;"><i data-lucide="users" class="cat-icon" style="width: 20px; height: 20px; color: #3b82f6;"></i></div>
+                    </div>
+                    <div>
+                        <div class="cat-amount">0 <span style="font-size: 13px;">Applicants</span></div>
+                    </div>
+                </div>
+
+                <!-- Fees Collected -->
+                <div class="category-card">
+                    <div class="cat-header">
+                        <div class="cat-title">Fees Collected</div>
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #ecfdf5; display: flex; align-items: center; justify-content: center;"><i data-lucide="banknote" class="cat-icon" style="width: 20px; height: 20px; color: #10b981;"></i></div>
+                    </div>
+                    <div>
+                        <div class="cat-amount">₦0<span>.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Pending Applications -->
+                <div class="category-card">
+                    <div class="cat-header">
+                        <div class="cat-title">Pending Applications</div>
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #fef2f2; display: flex; align-items: center; justify-content: center;"><i data-lucide="clock" class="cat-icon" style="width: 20px; height: 20px; color: #ef4444;"></i></div>
+                    </div>
+                    <div>
+                        <div class="cat-amount">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <!-- Application Insights -->
+            <div class="card recent-card"
+                style="background: #3b82f6; color: white; padding: 24px; justify-content: space-between; position: relative; overflow: hidden;">
+
+                <!-- Right Side Pattern Lines -->
+                <div
+                    style="position: absolute; top: 0; right: 0; width: 60%; height: 100%; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 16px); pointer-events: none; mask-image: linear-gradient(to right, transparent, black 60%); -webkit-mask-image: linear-gradient(to right, transparent, black 60%);">
+                </div>
+
+                <!-- Slide 1 -->
+                <div class="insight-slide" id="slide-1" style="display: none; flex-direction: column; flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-size: 20px; font-weight: 500;">Application Insights</div>
+                            <div style="font-size: 14px; opacity: 0.8; margin-top: 4px;">Submission Rate</div>
+                        </div>
+                        <div
+                            style="width: 44px; height: 44px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                            <i data-lucide="activity" style="color: #3b82f6; width: 22px; height: 22px;"></i>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; display: flex; align-items: baseline; gap: 8px;">
+                        <div style="font-size: 58px; font-weight: 500; line-height: 1;">82</div>
+                        <div style="font-size: 29px; opacity: 0.8;">%</div>
+                        <i data-lucide="arrow-up-right" style="width: 24px; height: 24px; opacity: 0.8;"></i>
+                    </div>
+                    <div style="margin-top: 16px; font-size: 14px; line-height: 1.4; min-height: 50px;">
+                        <span style="font-weight: 500;">Increase in daily form submissions</span><br>
+                        <span style="opacity: 0.7;">detected recently.</span>
+                    </div>
+                    <div
+                        style="margin-top: 16px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        View Analytics Report <i data-lucide="arrow-right"
+                            style="width: 16px; height: 16px; opacity: 0.7;"></i>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="insight-slide" id="slide-2" style="display: none; flex-direction: column; flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-size: 20px; font-weight: 500;">Application Insights</div>
+                            <div style="font-size: 14px; opacity: 0.8; margin-top: 4px;">Completion Rate</div>
+                        </div>
+                        <div
+                            style="width: 44px; height: 44px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                            <i data-lucide="check-circle" style="color: #10b981; width: 22px; height: 22px;"></i>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; display: flex; align-items: baseline; gap: 8px;">
+                        <div style="font-size: 58px; font-weight: 500; line-height: 1;">96</div>
+                        <div style="font-size: 29px; opacity: 0.8;">%</div>
+                        <i data-lucide="arrow-up-right" style="width: 24px; height: 24px; opacity: 0.8;"></i>
+                    </div>
+                    <div style="margin-top: 16px; font-size: 14px; line-height: 1.4; min-height: 50px;">
+                        <span style="font-weight: 500;">Forms are being completed</span> <br><span
+                            style="opacity: 0.7;">successfully without drop-offs.</span>
+                    </div>
+                    <div
+                        style="margin-top: 16px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        View Analytics Report <i data-lucide="arrow-right"
+                            style="width: 16px; height: 16px; opacity: 0.7;"></i>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="insight-slide" id="slide-3" style="display: flex; flex-direction: column; flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-size: 20px; font-weight: 500;">Application Insights</div>
+                            <div style="font-size: 14px; opacity: 0.8; margin-top: 4px;">AI-driven predictions</div>
+                        </div>
+                        <div
+                            style="width: 44px; height: 44px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                            <i data-lucide="zap" style="color: #22c55e; fill: #22c55e; width: 22px; height: 22px;"></i>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; display: flex; align-items: baseline; gap: 8px;">
+                        <div style="font-size: 58px; font-weight: 500; line-height: 1;">45</div>
+                        <div style="font-size: 29px; opacity: 0.8;">%</div>
+                        <i data-lucide="arrow-up-right" style="width: 24px; height: 24px; opacity: 0.8;"></i>
+                    </div>
+                    <div style="margin-top: 16px; font-size: 14px; line-height: 1.4; min-height: 50px;">
+                        <span style="font-weight: 500;">Improvement in average completion time</span><br>
+                        <span style="opacity: 0.7;">detected recently.</span>
+                    </div>
+                    <div
+                        style="margin-top: 16px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        View Analytics Report <i data-lucide="arrow-right"
+                            style="width: 16px; height: 16px; opacity: 0.7;"></i>
+                    </div>
+                </div>
+
+                <!-- Slider dots -->
+                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 24px;">
+                    <div class="slider-dot" onclick="showSlide(1)"
+                        style="height: 4px; width: 32px; background: rgba(255,255,255,0.4); border-radius: 2px; cursor: pointer; transition: background 0.3s;">
+                    </div>
+                    <div class="slider-dot" onclick="showSlide(2)"
+                        style="height: 4px; width: 32px; background: rgba(255,255,255,0.4); border-radius: 2px; cursor: pointer; transition: background 0.3s;">
+                    </div>
+                    <div class="slider-dot" onclick="showSlide(3)"
+                        style="height: 4px; width: 32px; background: white; border-radius: 2px; cursor: pointer; transition: background 0.3s;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Submissions -->
+            <div class="card investment-card">
+                <div class="card-header">
+                    <div class="card-title">Recent Submissions</div>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px; overflow-y: auto; max-height: 250px; padding-right: 8px;">
+                    <!-- Item 1 -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 600;">DO</div>
+                            <div>
+                                <div style="font-weight: 500; color: var(--text-dark);">David Olamide</div>
+                                <div style="font-size: 11px; color: var(--text-light);">2026 Academic Session</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 600; color: #10b981;">Completed</div>
+                            <div style="font-size: 10px; color: var(--text-light); margin-top: 2px;">2 mins ago</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 600;">SA</div>
+                            <div>
+                                <div style="font-weight: 500; color: var(--text-dark);">Sarah Adekola</div>
+                                <div style="font-size: 11px; color: var(--text-light);">Staff Recruitment</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 600; color: #f59e0b;">Pending</div>
+                            <div style="font-size: 10px; color: var(--text-light); margin-top: 2px;">45 mins ago</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 600;">ME</div>
+                            <div>
+                                <div style="font-weight: 500; color: var(--text-dark);">Michael Ezenwa</div>
+                                <div style="font-size: 11px; color: var(--text-light);">Transfer Application</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 600; color: #10b981;">Completed</div>
+                            <div style="font-size: 10px; color: var(--text-light); margin-top: 2px;">2 hours ago</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 600;">FN</div>
+                            <div>
+                                <div style="font-weight: 500; color: var(--text-dark);">Favour Nwosu</div>
+                                <div style="font-size: 11px; color: var(--text-light);">Hostel Accommodation</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 600; color: #ef4444;">Rejected</div>
+                            <div style="font-size: 10px; color: var(--text-light); margin-top: 2px;">5 hours ago</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 600;">TO</div>
+                            <div>
+                                <div style="font-weight: 500; color: var(--text-dark);">Tunde Ojo</div>
+                                <div style="font-size: 11px; color: var(--text-light);">2026 Academic Session</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 600; color: #f59e0b;">Pending</div>
+                            <div style="font-size: 10px; color: var(--text-light); margin-top: 2px;">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Create Form Modal Overlay -->
+    <div class="modal-overlay" id="createFormModalOverlay" onclick="closeCreateFormModal(event)">
+        <div class="create-form-modal" id="createFormModal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Create New Form</h3>
+                <button class="close-btn" onclick="closeCreateFormModal()"><i data-lucide="x" style="width: 20px; height: 20px;"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Form Title</label>
+                        <input type="text" placeholder="e.g. 2026 Academic Session Admission" class="form-input">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Category</label>
+                        <select class="form-input" onchange="this.nextElementSibling.style.display = this.value === 'Other' ? 'block' : 'none'">
+                            <option>General Admission</option>
+                            <option>Recruitment</option>
+                            <option>Survey</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-input" placeholder="Type category name..." style="display: none; margin-top: 8px;" id="otherCategoryInput">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Opening Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Closing Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Application Fee (Optional)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-weight: 600;">₦</span>
+                        <input type="number" placeholder="0.00" class="form-input" style="padding-left: 36px;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description & Instructions</label>
+                    <textarea class="form-input" placeholder="Provide instructions for applicants..." rows="4" style="resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-toggle-row" style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 13px; color: var(--text-dark);">Require Document Uploads</div>
+                        <div style="font-size: 11px; color: var(--text-light);">Applicants must upload a birth certificate or passport.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                
+                <div class="form-toggle-row" style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 12px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 13px; color: var(--text-dark);">Save as Template</div>
+                        <div style="font-size: 11px; color: var(--text-light);">Make this form reusable for future configurations.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; padding: 24px; border-top: 1px solid var(--border-color); background: var(--card-bg);">
+                <button class="btn-secondary" onclick="closeCreateFormModal()" style="border: 1px solid var(--border-color); background: transparent; padding: 10px 20px; cursor: pointer;">Cancel</button>
+                <button class="btn-primary" onclick="closeCreateFormModal()" style="padding: 10px 24px; font-size: 13px; cursor: pointer;"><i data-lucide="check" style="width: 16px; height: 16px;"></i> Publish Form</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check local storage for dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.moon-icon').style.display = 'none';
+                document.querySelector('.sun-icon').style.display = 'block';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.querySelector('.moon-icon').style.display = isDark ? 'none' : 'block';
+            document.querySelector('.sun-icon').style.display = isDark ? 'block' : 'none';
+        }
+        
+        function openCreateFormModal() {
+            const overlay = document.getElementById('createFormModalOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
+        }
+
+        function closeCreateFormModal(e) {
+            if (!e || e.target.id === 'createFormModalOverlay' || !e.target) {
+                const overlay = document.getElementById('createFormModalOverlay');
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 400); 
+            }
+        }
+
+        let currentSlide = 3;
+        let slideInterval;
+
+        function showSlide(index) {
+            // Hide all slides
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('slide-' + i).style.display = 'none';
+            }
+            // Reset all dots
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach(dot => {
+                dot.style.background = 'rgba(255,255,255,0.4)';
+            });
+
+            // Show active slide and dot
+            document.getElementById('slide-' + index).style.display = 'flex';
+            dots[index - 1].style.background = 'white';
+            currentSlide = index;
+
+            // Reset timer
+            clearInterval(slideInterval);
+            startSlideTimer();
+        }
+
+        function nextSlide() {
+            let next = currentSlide + 1;
+            if (next > 3) next = 1;
+            showSlide(next);
+        }
+
+        function startSlideTimer() {
+            slideInterval = setInterval(nextSlide, 7000);
+        }
+
+        // Initialize slider timer
+        startSlideTimer();
+
+        // Chart Data and Logic
+        const barsWrapper = document.getElementById('chartBarsWrapper');
+        const chartContainer = document.getElementById('mainChartContainer');
+        const tooltip = document.getElementById('chartTooltip');
+
+        function renderChartData(timeframe = '30D') {
+            barsWrapper.innerHTML = '';
+
+            const forms = ['Admission', 'Registration', 'Job App', 'Scholarship', 'Survey', 'Feedback', 'Leave'];
+            const chartData = forms.map((formName, i) => {
+                const baseValue = 1500 + Math.sin(i * 1.5) * 800 + Math.random() * 500;
+                let multiplier = timeframe === '30D' ? 1 : timeframe === '7D' ? 0.25 : 3;
+                return {
+                    form: formName,
+                    value: Math.floor(baseValue * multiplier),
+                    growth: (Math.random() * 12 - 4).toFixed(1)
+                };
+            });
+
+            const maxValue = Math.max(...chartData.map(d => d.value));
+
+            chartData.forEach((dataPoint) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+
+                // Calculate height percentage relative to max value
+                const heightPercent = (dataPoint.value / maxValue) * 88 + 12;
+                bar.style.height = `${heightPercent}%`;
+
+                bar.addEventListener('mouseenter', () => {
+                    document.querySelectorAll('.chart-bar').forEach(b => {
+                        b.classList.remove('active');
+                        b.innerHTML = '';
+                    });
+
+                    bar.classList.add('active');
+
+                    // Metronic indicator pin
+                    bar.innerHTML = `
+                        <div style="position: absolute; top: -14px; left: 50%; width: 2px; height: 14px; background: #3b82f6; transform: translateX(-50%); z-index: 10; pointer-events: none;">
+                            <div style="width: 8px; height: 8px; background: #3b82f6; border: 2px solid #ffffff; border-radius: 50%; position: absolute; top: -4px; left: -4px;"></div>
+                        </div>
+                    `;
+
+                    // Update tooltip data
+                    document.getElementById('tooltipValue').innerText = dataPoint.value.toLocaleString();
+                    document.getElementById('tooltipDate').innerText = dataPoint.form;
+                    document.getElementById('tooltipGrowthText').innerText = Math.abs(dataPoint.growth) + '%';
+
+                    const growthBadge = document.getElementById('tooltipGrowthBadge');
+                    const growthIcon = document.getElementById('tooltipGrowthIcon');
+
+                    if (dataPoint.growth >= 0) {
+                        growthBadge.style.color = '#10b981';
+                        growthBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                        growthIcon.setAttribute('data-lucide', 'arrow-up-right');
+                    } else {
+                        growthBadge.style.color = '#ef4444';
+                        growthBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+                        growthIcon.setAttribute('data-lucide', 'arrow-down-right');
+                    }
+
+                    lucide.createIcons();
+
+                    // Position tooltip cleanly centered over the bar
+                    const containerRect = chartContainer.getBoundingClientRect();
+                    const barRect = bar.getBoundingClientRect();
+                    const relativeLeft = barRect.left - containerRect.left + (barRect.width / 2);
+
+                    tooltip.style.left = `${relativeLeft}px`;
+                    tooltip.style.opacity = '1';
+                });
+
+                bar.addEventListener('mouseleave', () => {
+                    tooltip.style.opacity = '0';
+                    bar.classList.remove('active');
+                    bar.innerHTML = '';
+                });
+
+                barsWrapper.appendChild(bar);
+            });
+        }
+
+        // Initialize default 30 days chart
+        renderChartData('30D');
+
+        // Metronic Tab Switches
+        const metronicTabs = document.querySelectorAll('.metronic-tab');
+        metronicTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                metronicTabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.style.background = 'transparent';
+                    t.style.color = 'var(--text-light)';
+                    t.style.boxShadow = 'none';
+                });
+                tab.classList.add('active');
+                tab.style.background = 'var(--card-bg)';
+                tab.style.color = 'var(--text-dark)';
+
+                renderChartData(tab.innerText);
+            });
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // GSAP Page Load Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+            
+            // Set initial invisible states to prevent layout shifts
+            gsap.set('.navbar', { y: -20, opacity: 0 });
+            gsap.set('.header-content', { y: 20, opacity: 0 });
+            gsap.set('.overview-card', { y: 30, opacity: 0 });
+            gsap.set('.category-card', { y: 30, opacity: 0, scale: 0.95 });
+            gsap.set('.recent-card, .investment-card', { y: 30, opacity: 0 });
+            
+            // Animate in sequence
+            tl.to('.navbar', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' })
+              .to('.header-content', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+              .to('.overview-card', { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.4')
+              .to('.category-card', { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.2)' }, '-=0.4')
+              .to('.recent-card, .investment-card', { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, '-=0.2');
+        });
+    </script>
+</body>
+
+</html>

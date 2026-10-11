@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings </title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        .settings-layout {
+            display: flex;
+            gap: 32px;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .settings-sidebar {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--btn-bg);
+            color: var(--text-dark);
+        }
+
+        .sidebar-item.active {
+            background: rgba(0, 82, 204, 0.1);
+            color: #0052cc;
+        }
+
+        body.dark-theme .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+
+        .settings-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .settings-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .settings-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0052cc;
+            box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231f2937%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px top 50%;
+            background-size: 12px auto;
+            padding-right: 40px;
+        }
+
+        body.dark-theme select.form-control {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23f8fafc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .btn-save {
+            background: #0052cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #0043a8;
+            transform: translateY(-1px);
+        }
+
+        .btn-draft {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-draft:hover {
+            background: rgba(0, 82, 204, 0.05);
+        }
+
+        /* Image Upload Styles */
+        .image-upload-wrapper {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+        }
+
+        body.dark-theme .image-upload-wrapper {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .system-logo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .upload-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .upload-controls label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .upload-hint {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .btn-upload {
+            background: transparent;
+            color: #0052cc;
+            border: 1px solid #0052cc;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-upload:hover {
+            background: rgba(0, 82, 204, 0.05);
+        }
+
+        body.dark-theme .btn-upload {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        body.dark-theme .btn-upload:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 32px;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--btn-bg);
+            color: var(--text-dark);
+        }
+
+        /* Venues Specific Styles */
+        .venues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .btn-add {
+            background: transparent;
+            color: #0052cc;
+            border: 1px solid #0052cc;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: rgba(0, 82, 204, 0.05);
+        }
+
+        body.dark-theme .btn-add {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        body.dark-theme .btn-add:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .venue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .venue-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            transition: border-color 0.2s;
+        }
+
+        .venue-card:hover {
+            border-color: #0052cc;
+        }
+
+        .venue-info h3 {
+            margin: 0 0 4px 0;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .venue-info p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .venue-meta {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .venue-capacity {
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo"
+                style="display: flex; align-items: center; gap: 8px; font-size: 29px; font-weight: 700; letter-spacing: -1px;  padding: 6px 16px 6px 12px; ">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 32px; height: 32px;">
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div style="display: flex;">
+                    <span style="color: #0052cc;">form</span><span style="color: #ffcc00;">box</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link" style="text-decoration: none; color: inherit;">Dashboard</a>
+                <a href="forms.html" class="nav-link" style="text-decoration: none; color: inherit;">Forms</a>
+                
+                <div class="nav-dropdown">
+                    <div class="nav-link" id="nav-applications" style="display: flex; align-items: center; gap: 4px;">Applications <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></div>
+                    <div class="nav-dropdown-content">
+                        <a href="completed-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Completed Applications</div>
+                                <div class="mega-subtitle">Successfully submitted forms</div>
+                            </div>
+                        </a>
+                        <a href="incomplete-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Incomplete Applications</div>
+                                <div class="mega-subtitle">Forms saved as drafts</div>
+                            </div>
+                        </a>
+                        <a href="exam-slip.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <i data-lucide="ticket" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Exam Slips</div>
+                                <div class="mega-subtitle">Generate & print exam slips</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="requery.html" class="nav-link" style="text-decoration: none; color: inherit;">Payments</a>
+                <a href="announcements.html" class="nav-link" style="text-decoration: none; color: inherit;">Announcement</a>
+                <a href="result.html" class="nav-link" style="text-decoration: none; color: inherit;">Results</a>
+            </div>
+            
+            <div class="user-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px; display: none;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                </button>
+                <a href="settings.html" class="user-avatar" style="text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="width: 24px; height: 24px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Header Content -->
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1 id="pageTitle">General Settings ⚙️</h1>
+                    <h2 id="pageSubtitle">Manage global system configurations</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="settings-layout">
+
+            <!-- Sidebar -->
+            <div class="settings-sidebar">
+                <div class="sidebar-item active" onclick="switchTab('general', this)">
+                    <i data-lucide="settings" style="width: 18px; height: 18px;"></i> General Settings
+                </div>
+                <div class="sidebar-item" onclick="switchTab('exam-setup', this)">
+                    <i data-lucide="clipboard-list" style="width: 18px; height: 18px;"></i> Examination Setup
+                </div>
+                <div class="sidebar-item" onclick="switchTab('exam-venues', this)">
+                    <i data-lucide="map-pin" style="width: 18px; height: 18px;"></i> Examination Venues
+                </div>
+                <div class="sidebar-item" onclick="switchTab('security', this)">
+                    <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i> Security & Login
+                </div>
+                <div class="sidebar-item text-danger" style="margin-top: 16px; border-top: 1px solid var(--border-color); border-radius: 0; padding-top: 16px; color: #ef4444;" onclick="window.location.href='login.html'">
+                    <i data-lucide="log-out" style="width: 18px; height: 18px;"></i> Logout
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="settings-content">
+
+                <!-- Tab: General Settings -->
+                <div id="tab-general" class="tab-pane active">
+                    <div class="settings-card" id="settingsFormCard">
+                        <div class="settings-section-title">System Information</div>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <div class="image-upload-wrapper">
+                                    <div class="system-logo-preview">
+                                        <img id="previewImg" src="" alt="System Logo"
+                                            style="display:none; width: 100%; height: 100%; object-fit: cover;">
+                                        <i data-lucide="image" id="previewIcon"
+                                            style="width: 32px; height: 32px; color: var(--text-light);"></i>
+                                    </div>
+                                    <div class="upload-controls">
+                                        <label>System Logo / Image</label>
+                                        <p class="upload-hint">Recommended size: 256x256px (PNG or JPG)</p>
+                                        <div style="display: flex; gap: 12px;">
+                                            <label class="btn-upload">
+                                                <i data-lucide="upload" style="width: 16px; height: 16px;"></i> Upload
+                                                Image
+                                                <input type="file" id="sysLogo" accept="image/*" style="display: none;"
+                                                    onchange="previewImage(this)">
+                                            </label>
+                                            <button class="btn-secondary" style="padding: 8px 16px;"
+                                                onclick="removeImage()">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="schoolName">School Name</label>
+                                <input type="text" id="schoolName" class="form-control" placeholder="Enter school name" value="Ephraim High school">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail">Contact Email</label>
+                                <input type="email" id="contactEmail" class="form-control" placeholder="support@EphraimHighschool">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactPhone">Contact Phone</label>
+                                <input type="text" id="contactPhone" class="form-control" value="+1 (555) 123-4567">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="timezone">System Timezone</label>
+                                <select id="timezone" class="form-control">
+                                    <option value="EST">Eastern Standard Time (EST)</option>
+                                    <option value="CST">Central Standard Time (CST)</option>
+                                    <option value="PST">Pacific Standard Time (PST)</option>
+                                    <option value="UTC" selected>Coordinated Universal Time (UTC)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary"><i data-lucide="save" style="width: 18px; height: 18px;"></i> Save
+                                Settings</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Examination Setup -->
+                <div id="tab-exam-setup" class="tab-pane">
+                    <div class="settings-card">
+                        <div class="settings-section-title">Global Exam Configuration</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="examDate">Default Exam Date</label>
+                                <input type="date" id="examDate" class="form-control" value="2026-11-15">
+                            </div>
+                            <div class="form-group">
+                                <label for="examDuration">Duration (Minutes)</label>
+                                <input type="number" id="examDuration" class="form-control" value="120">
+                            </div>
+                            <div class="form-group">
+                                <label for="passScore">Passing Score (%)</label>
+                                <input type="number" id="passScore" class="form-control" value="65">
+                            </div>
+                            <div class="form-group">
+                                <label for="examMode">Exam Mode</label>
+                                <select id="examMode" class="form-control">
+                                    <option value="cbt">Computer Based Test (CBT)</option>
+                                    <option value="ppt">Paper & Pencil Test</option>
+                                    <option value="hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="instructions">Candidate Instructions</label>
+                                <textarea id="instructions"
+                                    class="form-control">Please arrive at the venue 30 minutes before the scheduled time. Bring a valid form of identification and your printed application slip. Electronic devices are not permitted inside the examination hall.</textarea>
+                            </div>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary"><i data-lucide="save" style="width: 18px; height: 18px;"></i> Save
+                                Setup</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Examination Venues -->
+                <div id="tab-exam-venues" class="tab-pane">
+                    <div class="settings-card" style="background: transparent; border: none; padding: 0;">
+
+                        <div class="venues-header">
+                            <h3 style="margin: 0; color: var(--text-dark); font-size: 16px;">Configured Venues</h3>
+                            <button class="btn-add" onclick="openModal('addVenueModal')"><i data-lucide="plus"
+                                    style="width: 16px; height: 16px;"></i> Add Venue</button>
+                        </div>
+
+                        <div class="venue-list">
+
+                            <div class="venue-card">
+                                <div class="venue-info">
+                                    <h3>Lagos Tech Hub</h3>
+                                    <p>14 Herbert Macaulay Way, Yaba, Lagos</p>
+                                </div>
+                                <div class="venue-meta">
+                                    <div class="venue-capacity">
+                                        <i data-lucide="users"
+                                            style="width: 16px; height: 16px; color: var(--text-light);"></i>
+                                        250 Seats
+                                    </div>
+                                    <div class="status-badge status-active">Active</div>
+                                </div>
+                            </div>
+
+                            <div class="venue-card">
+                                <div class="venue-info">
+                                    <h3>Abuja Convention Center</h3>
+                                    <p>Garki District, Abuja, FCT</p>
+                                </div>
+                                <div class="venue-meta">
+                                    <div class="venue-capacity">
+                                        <i data-lucide="users"
+                                            style="width: 16px; height: 16px; color: var(--text-light);"></i>
+                                        500 Seats
+                                    </div>
+                                    <div class="status-badge status-active">Active</div>
+                                </div>
+                            </div>
+
+                            <div class="venue-card">
+                                <div class="venue-info">
+                                    <h3>Port Harcourt Digital Center</h3>
+                                    <p>Aba Road, Port Harcourt, Rivers State</p>
+                                </div>
+                                <div class="venue-meta">
+                                    <div class="venue-capacity">
+                                        <i data-lucide="users"
+                                            style="width: 16px; height: 16px; color: var(--text-light);"></i>
+                                        150 Seats
+                                    </div>
+                                    <div class="status-badge status-inactive">Inactive</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Security & Login -->
+                <div id="tab-security" class="tab-pane">
+                    <div class="settings-card">
+                        <div class="settings-section-title">Login Credentials</div>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Email Address</label>
+                                <input type="email" class="form-control" value="admin@nixtio.com" disabled
+                                    style="background: rgba(0,0,0,0.03); cursor: not-allowed; opacity: 0.7;">
+                                <span style="font-size: 12px; color: var(--text-light); margin-top: 4px;">To change your
+                                    email, please contact technical support.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" class="form-control" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" class="form-control" placeholder="Enter new password">
+                            </div>
+                        </div>
+
+                        <div class="settings-section-title" style="margin-top: 16px;">Two-Factor Authentication</div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.01);">
+                            <div>
+                                <h4 style="margin: 0 0 6px 0; color: var(--text-dark); font-size: 14px;">Authenticator
+                                    App</h4>
+                                <p style="margin: 0; font-size: 12px; color: var(--text-light);">Use an app like Google
+                                    Authenticator to secure your account.</p>
+                            </div>
+                            <button class="btn-upload"><i data-lucide="smartphone"
+                                    style="width: 16px; height: 16px;"></i> Enable 2FA</button>
+                        </div>
+
+                        <div class="settings-actions">
+                            <button class="btn-primary"><i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+                                Update Security</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Venue Modal -->
+    <div class="modal-overlay" id="addVenueModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Add New Venue</h2>
+                <button class="modal-close" onclick="closeModal('addVenueModal')">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="venueName">Venue Name</label>
+                <input type="text" id="venueName" class="form-control" placeholder="E.g., Lagos Tech Hub">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="venueAddress">Address</label>
+                <textarea id="venueAddress" class="form-control" style="min-height: 80px;"
+                    placeholder="Full street address"></textarea>
+            </div>
+            <div class="form-grid" style="margin-bottom: 24px;">
+                <div class="form-group">
+                    <label for="venueCapacity">Capacity (Seats)</label>
+                    <input type="number" id="venueCapacity" class="form-control" placeholder="E.g. 250">
+                </div>
+                <div class="form-group">
+                    <label for="venueStatus">Status</label>
+                    <select id="venueStatus" class="form-control">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-actions" style="margin-top: 0;">
+                <button class="btn-secondary" onclick="closeModal('addVenueModal')"
+                    style="margin-right: 12px;">Cancel</button>
+                <button class="btn-primary">Save Venue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Check local storage for dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.moon-icon').style.display = 'none';
+                document.querySelector('.sun-icon').style.display = 'block';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+            // Toggle icons
+            document.querySelector('.moon-icon').style.display = isDark ? 'none' : 'block';
+            document.querySelector('.sun-icon').style.display = isDark ? 'block' : 'none';
+        }
+
+        function switchTab(tabId, element) {
+            // Update active state on sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            // Hide all tabs and show selected
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Update Header titles dynamically
+            const title = document.getElementById('pageTitle');
+            const subtitle = document.getElementById('pageSubtitle');
+
+            if (tabId === 'general') {
+                title.innerHTML = 'General Settings ⚙️';
+                subtitle.innerHTML = 'Manage global system configurations';
+            } else if (tabId === 'exam-setup') {
+                title.innerHTML = 'Examination Setup';
+                subtitle.innerHTML = 'Configure rules and parameters for examinations';
+            } else if (tabId === 'exam-venues') {
+                title.innerHTML = 'Examination Venues';
+                subtitle.innerHTML = 'Manage testing locations and capacities';
+            } else if (tabId === 'security') {
+                title.innerHTML = 'Security & Login';
+                subtitle.innerHTML = 'Manage your account credentials and 2FA';
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('previewImg');
+                    const icon = document.getElementById('previewIcon');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    icon.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeImage() {
+            const input = document.getElementById('sysLogo');
+            const img = document.getElementById('previewImg');
+            const icon = document.getElementById('previewIcon');
+            if (input) input.value = '';
+            if (img) {
+                img.src = '';
+                img.style.display = 'none';
+            }
+            if (icon) icon.style.display = 'block';
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // GSAP Page Load Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+
+            gsap.set('.navbar', { y: -20, opacity: 0 });
+            gsap.set('.header-content', { y: 20, opacity: 0 });
+            gsap.set('.settings-card', { y: 30, opacity: 0 });
+
+            tl.to('.navbar', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' })
+                .to('.header-content', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+                .to('.settings-card', { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.2');
+        });
+    </script>
+</body>
+
+</html>

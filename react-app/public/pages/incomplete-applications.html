@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incomplete Applications </title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        .applications-layout {
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box i, .search-box svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-box input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 10px 10px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #0052cc;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .modern-table th {
+            background: rgba(0, 0, 0, 0.02);
+            padding: 16px 24px;
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        body.dark-theme .modern-table th {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .modern-table td {
+            padding: 20px 24px;
+            font-size: 13px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .modern-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .modern-table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        body.dark-theme .modern-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-draft {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .btn-action {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--btn-bg);
+            border-color: var(--text-light);
+        }
+
+        .btn-remind {
+            background: #0052cc;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-remind:hover {
+            background: #0040a3;
+        }
+
+        .btn-export {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 82, 204, 0.1);
+            color: #0052cc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        body.dark-theme .user-avatar-sm {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info .email {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .progress-bar-container {
+            width: 100px;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #f59e0b;
+            border-radius: 3px;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: toastSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo"
+                style="display: flex; align-items: center; gap: 8px; font-size: 29px; font-weight: 700; letter-spacing: -1px;  padding: 6px 16px 6px 12px; ">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 32px; height: 32px;">
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div style="display: flex;">
+                    <span style="color: #0052cc;">form</span><span style="color: #ffcc00;">box</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link" style="text-decoration: none; color: inherit;">Dashboard</a>
+                <a href="forms.html" class="nav-link" style="text-decoration: none; color: inherit;">Forms</a>
+                
+                <div class="nav-dropdown">
+                    <div class="nav-link active" id="nav-applications" style="display: flex; align-items: center; gap: 4px;">Applications <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></div>
+                    <div class="nav-dropdown-content">
+                        <a href="completed-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Completed Applications</div>
+                                <div class="mega-subtitle">Successfully submitted forms</div>
+                            </div>
+                        </a>
+                        <a href="incomplete-applications.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Incomplete Applications</div>
+                                <div class="mega-subtitle">Forms saved as drafts</div>
+                            </div>
+                        </a>
+                        <a href="exam-slip.html" class="mega-menu-item">
+                            <div class="mega-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <i data-lucide="ticket" style="width: 18px; height: 18px;"></i>
+                            </div>
+                            <div class="mega-text-box">
+                                <div class="mega-title">Exam Slips</div>
+                                <div class="mega-subtitle">Generate & print exam slips</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="requery.html" class="nav-link" style="text-decoration: none; color: inherit;">Payments</a>
+                <a href="announcements.html" class="nav-link" style="text-decoration: none; color: inherit;">Announcement</a>
+                <a href="result.html" class="nav-link" style="text-decoration: none; color: inherit;">Results</a>
+            </div>
+            
+            <div class="user-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px; display: none;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                </button>
+                <a href="settings.html" class="user-avatar" style="text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="width: 24px; height: 24px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Header Content -->
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1>Incomplete Applications</h1>
+                    <h2>Track forms saved as drafts and send completion reminders</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="applications-layout">
+
+            <div class="filter-bar">
+                <div class="search-box">
+                    <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                    <input type="text" placeholder="Search by name or email...">
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select">
+                        <option value="all">All Progress</option>
+                        <option value="high">High (&gt;75%)</option>
+                        <option value="medium">Medium (25-75%)</option>
+                        <option value="low">Low (&lt;25%)</option>
+                    </select>
+                    <button class="btn-primary">
+                        <i data-lucide="send" style="width: 16px; height: 16px;"></i> Remind All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Student</th>
+                            <th>Parent</th>
+                            <th>Parent Email</th>
+                            <th>Parent Phone Number</th>
+                            <th>Progress</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td style="font-weight: 500; color: var(--text-light);">1</td>
+                            <td>
+                                <div class="user-meta">
+                                    <div class="user-avatar-sm">TO</div>
+                                    <div class="user-info">
+                                        <span class="name">Tobi Olamide</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: 500; color: var(--text-dark);">Mr. Olamide</td>
+                            <td><a href="mailto:mr.olamide@example.com"
+                                    style="color: #0052cc; text-decoration: none;">mr.olamide@example.com</a></td>
+                            <td style="font-family: monospace; color: var(--text-light);">+234 800 000 0000</td>
+                            <td>
+                                <div
+                                    style="display: flex; flex-direction: column; font-size: 12px; color: var(--text-light);">
+                                    <span>80% Complete</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" style="width: 80%;"></div>
+                                    </div>
+                                    <span style="font-size: 10px; margin-top: 4px;">Last saved: Oct 07, 2026</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-remind" onclick="sendReminder(this)">
+                                        <i data-lucide="bell-ring" style="width: 14px; height: 14px;"></i> Remind
+                                    </button>
+                                    <button class="btn-action" title="View Draft">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: 500; color: var(--text-light);">2</td>
+                            <td>
+                                <div class="user-meta">
+                                    <div class="user-avatar-sm">EJ</div>
+                                    <div class="user-info">
+                                        <span class="name">Emma Johnson</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: 500; color: var(--text-dark);">Mrs. Johnson</td>
+                            <td><a href="mailto:mrs.johnson@example.com"
+                                    style="color: #0052cc; text-decoration: none;">mrs.johnson@example.com</a></td>
+                            <td style="font-family: monospace; color: var(--text-light);">+234 811 111 1111</td>
+                            <td>
+                                <div
+                                    style="display: flex; flex-direction: column; font-size: 12px; color: var(--text-light);">
+                                    <span>45% Complete</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" style="width: 45%;"></div>
+                                    </div>
+                                    <span style="font-size: 10px; margin-top: 4px;">Last saved: Oct 05, 2026</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-remind" onclick="sendReminder(this)">
+                                        <i data-lucide="bell-ring" style="width: 14px; height: 14px;"></i> Remind
+                                    </button>
+                                    <button class="btn-action" title="View Draft">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: 500; color: var(--text-light);">3</td>
+                            <td>
+                                <div class="user-meta">
+                                    <div class="user-avatar-sm">CU</div>
+                                    <div class="user-info">
+                                        <span class="name">Chioma Uchenna</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: 500; color: var(--text-dark);">Dr. Uchenna</td>
+                            <td><a href="mailto:dr.uchenna@example.com"
+                                    style="color: #0052cc; text-decoration: none;">dr.uchenna@example.com</a></td>
+                            <td style="font-family: monospace; color: var(--text-light);">+234 822 222 2222</td>
+                            <td>
+                                <div
+                                    style="display: flex; flex-direction: column; font-size: 12px; color: var(--text-light);">
+                                    <span>10% Complete</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" style="width: 10%; background: #ef4444;"></div>
+                                    </div>
+                                    <span style="font-size: 10px; margin-top: 4px;">Last saved: Sep 30, 2026</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-remind" onclick="sendReminder(this)">
+                                        <i data-lucide="bell-ring" style="width: 14px; height: 14px;"></i> Remind
+                                    </button>
+                                    <button class="btn-action" title="View Draft">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-container">
+                <div class="pagination-info">Showing 1 to 10 of 50 entries</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" disabled><i data-lucide="chevron-left"
+                            style="width: 16px; height: 16px;"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <span class="page-dots">...</span>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn"><i data-lucide="chevron-right"
+                            style="width: 16px; height: 16px;"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Script Logic -->
+    <script>
+        // Check local storage for dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.moon-icon').style.display = 'none';
+                document.querySelector('.sun-icon').style.display = 'block';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.querySelector('.moon-icon').style.display = isDark ? 'none' : 'block';
+            document.querySelector('.sun-icon').style.display = isDark ? 'block' : 'none';
+        }
+
+        function sendReminder(btn) {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="spin" style="width: 14px; height: 14px; animation: spin 1s linear infinite;"></i> Sending...`;
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.8';
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = `<i data-lucide="check" style="width: 14px; height: 14px;"></i> Sent`;
+                btn.style.background = '#10b981';
+
+                showToast("Reminder email successfully sent to parent.");
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '';
+                    btn.style.pointerEvents = 'auto';
+                    btn.style.opacity = '1';
+                    lucide.createIcons();
+                }, 3000);
+            }, 1200);
+        }
+
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (isError) {
+                toast.style.background = '#ef4444';
+            }
+            toast.innerHTML = `
+                <i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" style="width: 18px; height: 18px;"></i>
+                ${message}
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(50px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // GSAP Page Load Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+
+            gsap.set('.navbar', { y: -20, opacity: 0 });
+            gsap.set('.header-content', { y: 20, opacity: 0 });
+            gsap.set('.filter-bar', { y: 20, opacity: 0 });
+            gsap.set('.table-wrapper', { y: 30, opacity: 0 });
+
+            tl.to('.navbar', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' })
+                .to('.header-content', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+                .to('.filter-bar', { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+                .to('.table-wrapper', { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.2');
+        });
+    </script>
+</body>
+
+</html>
