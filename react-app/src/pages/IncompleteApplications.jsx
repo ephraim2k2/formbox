@@ -254,14 +254,14 @@ export default function IncompleteApplications() {
           <table className="modern-table">
             <thead>
               <tr>
-                <th>S/N</th>
-                <th>Student</th>
-                <th>Parent</th>
-                <th>Parent Email</th>
-                <th>Parent Phone</th>
-                <th style={{ minWidth: '220px' }}>Stopped At Stage</th>
-                <th style={{ minWidth: '150px' }}>Progress</th>
-                <th>Action</th>
+                <th className="col-sn">S/N</th>
+                <th className="col-student">Student</th>
+                <th className="col-parent">Parent</th>
+                <th className="col-email">Parent Email</th>
+                <th className="col-phone">Parent Phone</th>
+                <th className="col-stage">Stopped At Stage</th>
+                <th className="col-progress">Progress</th>
+                <th className="col-action">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -274,15 +274,17 @@ export default function IncompleteApplications() {
               ) : (
                 filteredDrafts.map((draft, idx) => (
                   <tr key={draft.id}>
-                    <td style={{ fontWeight: '500', color: 'var(--text-light)' }}>{idx + 1}</td>
+                    <td className="col-sn" style={{ fontWeight: '500', color: 'var(--text-light)', textAlign: 'center' }}>
+                      {idx + 1}
+                    </td>
                     
                     {/* Student Info */}
-                    <td>
+                    <td className="col-student">
                       <div className="user-meta">
                         <div className="user-avatar-sm">{draft.initials}</div>
                         <div className="user-info">
-                          <span className="name">{draft.student}</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '2px' }}>
+                          <span className="name" style={{ whiteSpace: 'nowrap' }}>{draft.student}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '2px', whiteSpace: 'nowrap' }}>
                             {draft.program}
                           </span>
                         </div>
@@ -290,22 +292,24 @@ export default function IncompleteApplications() {
                     </td>
 
                     {/* Parent Info */}
-                    <td style={{ fontWeight: '500', color: 'var(--text-dark)' }}>{draft.parent}</td>
+                    <td className="col-parent" style={{ fontWeight: '500', color: 'var(--text-dark)', whiteSpace: 'nowrap' }}>
+                      {draft.parent}
+                    </td>
 
                     {/* Parent Email */}
-                    <td>
-                      <a href={`mailto:${draft.email}`} style={{ color: '#0052cc', textDecoration: 'none' }}>
+                    <td className="col-email">
+                      <a href={`mailto:${draft.email}`} style={{ color: '#0052cc', textDecoration: 'none', whiteSpace: 'nowrap' }}>
                         {draft.email}
                       </a>
                     </td>
 
-                    {/* Parent Phone */}
-                    <td style={{ fontFamily: 'monospace', color: 'var(--text-light)' }}>
+                    {/* Parent Phone (Fixed nowrap) */}
+                    <td className="col-phone" style={{ fontFamily: 'monospace', color: 'var(--text-light)', whiteSpace: 'nowrap' }}>
                       {draft.phone}
                     </td>
 
                     {/* STOPPED AT STAGE COLUMN */}
-                    <td>
+                    <td className="col-stage">
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                         <span className={`stage-tag stage-${draft.stageNumber}`}>
                           <span className="stage-step-num">Stage {draft.stageNumber}</span>
@@ -318,7 +322,7 @@ export default function IncompleteApplications() {
                     </td>
 
                     {/* PROGRESS COLUMN */}
-                    <td>
+                    <td className="col-progress">
                       <div style={{ display: 'flex', flexDirection: 'column', fontSize: '12px', color: 'var(--text-light)' }}>
                         <span style={{ fontWeight: 600, color: 'var(--text-dark)' }}>
                           {draft.progress}% Complete
@@ -338,13 +342,14 @@ export default function IncompleteApplications() {
                       </div>
                     </td>
 
-                    {/* ACTIONS */}
-                    <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                    {/* ACTIONS (Fixed full display) */}
+                    <td className="col-action">
+                      <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
                         <button 
                           className="btn-remind" 
                           onClick={() => showToast(`Reminder notification dispatched to ${draft.email} for ${draft.stageName}!`)}
                           title={`Send reminder to ${draft.parent}`}
+                          style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                         >
                           <BellRing size={14} /> Remind
                         </button>
@@ -352,6 +357,7 @@ export default function IncompleteApplications() {
                           className="btn-action" 
                           title="Inspect Drop-Off Stage Breakdown"
                           onClick={() => setSelectedDraft(draft)}
+                          style={{ flexShrink: 0 }}
                         >
                           <Eye size={14} />
                         </button>
