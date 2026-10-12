@@ -112,7 +112,7 @@ body.dark-theme .candidate-nav-pill:hover {
   background: #0f172a;
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+  box-shadow: none;
 }
 
 body.dark-theme .candidate-nav-pill.active {
@@ -177,7 +177,7 @@ body.dark-theme .candidate-icon-btn:hover {
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   cursor: pointer;
   flex-shrink: 0;
   background: #e2e8f0;
@@ -232,22 +232,23 @@ body.dark-theme .candidate-greeting-title {
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+  box-shadow: none;
 }
 
 .candidate-btn-black:hover {
   background: #1e293b;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.2);
+  box-shadow: none;
 }
 
 body.dark-theme .candidate-btn-black {
   background: #6366f1;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+  box-shadow: none;
 }
 
 body.dark-theme .candidate-btn-black:hover {
   background: #4f46e5;
+  box-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -281,7 +282,7 @@ body.dark-theme .candidate-btn-black:hover {
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
 .candidate-sub-pill:hover {
@@ -1110,4 +1111,218 @@ body.dark-theme .cand-modal-dialog {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Responsive Breakpoints for Candidate Dashboard
+   ========================================================================== */
+
+/* Tablet & Medium Screens (<= 1160px) */
+@media (max-width: 1160px) {
+  .candidate-grid-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Span third column across 2 columns on tablet */
+  .candidate-col:nth-child(3) {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* Mobile & Small Tablets (<= 860px) */
+@media (max-width: 860px) {
+  .candidate-portal-wrapper {
+    padding: 18px 16px 40px;
+  }
+
+  .candidate-portal-container {
+    gap: 16px;
+  }
+
+  /* Responsive Navbar */
+  .candidate-navbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 20px;
+  }
+
+  .candidate-brand-logo {
+    order: 1;
+  }
+
+  .candidate-nav-actions {
+    order: 2;
+  }
+
+  .candidate-nav-pills {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    display: flex;
+    justify-content: flex-start;
+    padding: 4px;
+    border-radius: 20px;
+  }
+
+  .candidate-nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .candidate-nav-pill {
+    padding: 7px 18px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  /* Greeting Header */
+  .candidate-header-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .candidate-greeting-title {
+    font-size: 27px;
+  }
+
+  .candidate-btn-black {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+  }
+
+  /* Subbar */
+  .candidate-subbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .candidate-filter-left {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .candidate-filter-left::-webkit-scrollbar {
+    display: none;
+  }
+
+  .candidate-sub-pill {
+    flex-shrink: 0;
+  }
+
+  .candidate-filter-right {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .candidate-search-pill {
+    flex: 1;
+    width: 100%;
+  }
+
+  /* Single Column Grid on Mobile */
+  .candidate-grid-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .candidate-col:nth-child(3) {
+    grid-column: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .cand-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+}
+
+/* Small Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .candidate-portal-wrapper {
+    padding: 12px 10px 32px;
+  }
+
+  .candidate-greeting-title {
+    font-size: 24px;
+  }
+
+  .cand-card {
+    padding: 16px;
+    border-radius: 18px;
+    gap: 16px;
+  }
+
+  .virtual-card-wrapper {
+    height: auto;
+    min-height: 160px;
+  }
+
+  .virtual-card-left {
+    width: 32%;
+    padding: 14px 12px;
+  }
+
+  .virtual-card-right {
+    padding: 14px;
+  }
+
+  .virtual-card-brand-text {
+    font-size: 17px;
+  }
+
+  .virtual-card-number {
+    font-size: 11.5px;
+  }
+
+  .stat-currency-large {
+    font-size: 32px;
+  }
+
+  .spending-bars-row {
+    gap: 12px;
+  }
+
+  .income-big-val {
+    font-size: 30px;
+  }
+
+  .gauge-svg-wrapper {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .gauge-center-val {
+    font-size: 30px;
+  }
+
+  .purple-metric-card {
+    padding: 18px;
+    border-radius: 20px;
+    height: auto;
+    min-height: 170px;
+  }
+
+  .purple-big-val {
+    font-size: 32px;
+  }
+
+  .cand-modal-dialog {
+    width: 100%;
+    padding: 18px;
+    border-radius: 20px;
+  }
 }

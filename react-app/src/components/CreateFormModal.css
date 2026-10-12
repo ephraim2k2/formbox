@@ -1,0 +1,551 @@
+/* Versatile Create Form Modal & Stepper Builder Styles */
+.create-form-modal {
+  background: var(--card-bg, #ffffff);
+  width: 92%;
+  max-width: 860px;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--border-color, rgba(0,0,0,0.08));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90vh;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-dark, #0f172a);
+}
+
+.modal-overlay {
+  display: flex !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-overlay.active .create-form-modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Modal Header & Stepper Progress */
+.modal-header-stepper {
+  padding: 20px 28px 16px;
+  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.08));
+  background: var(--card-bg, #ffffff);
+}
+
+.modal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-title-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(0, 82, 204, 0.08);
+  color: #0052cc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.dark-theme .modal-title-icon {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+
+.modal-header-stepper h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-dark, #0f172a);
+}
+
+.modal-header-stepper p {
+  font-size: 12.5px;
+  color: var(--text-light, #64748b);
+  margin: 2px 0 0;
+}
+
+/* Stepper Bar */
+.stepper-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 6px;
+  padding: 0 10px;
+}
+
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.stepper-step:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.step-indicator {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--border-color, #e2e8f0);
+  color: var(--text-light, #64748b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.stepper-step.active .step-indicator {
+  background: #0052cc;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 82, 204, 0.2);
+}
+
+.stepper-step.completed .step-indicator {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.step-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.step-info-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light, #94a3b8);
+  font-weight: 600;
+}
+
+.step-info-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-dark, #334155);
+}
+
+.stepper-step.active .step-info-title {
+  color: #0052cc;
+}
+
+body.dark-theme .stepper-step.active .step-info-title {
+  color: #60a5fa;
+}
+
+.stepper-divider {
+  flex: 1;
+  height: 2px;
+  background: var(--border-color, #e2e8f0);
+  margin: 0 8px;
+  transition: background 0.3s ease;
+}
+
+.stepper-divider.completed {
+  background: #10b981;
+}
+
+/* Modal Body */
+.modal-scroll-content {
+  padding: 24px 28px;
+  overflow-y: auto;
+  max-height: calc(85vh - 180px);
+}
+
+/* Format Choice Cards (Single Page vs Multi-Step Stepper) */
+.format-selector-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.format-card {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-color, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.format-card:hover {
+  border-color: #0052cc;
+  background: rgba(0, 82, 204, 0.02);
+}
+
+.format-card.selected {
+  border-color: #0052cc;
+  background: rgba(0, 82, 204, 0.05);
+  box-shadow: 0 0 0 1px #0052cc;
+}
+
+body.dark-theme .format-card.selected {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.format-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(0, 82, 204, 0.1);
+  color: #0052cc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+body.dark-theme .format-icon {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+
+.format-details h4 {
+  font-size: 13.5px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--text-dark, #0f172a);
+}
+
+.format-details p {
+  font-size: 12px;
+  color: var(--text-light, #64748b);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Steps Management Section */
+.stepper-editor-box {
+  background: rgba(0, 82, 204, 0.02);
+  border: 1px dashed rgba(0, 82, 204, 0.3);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+body.dark-theme .stepper-editor-box {
+  background: rgba(59, 130, 246, 0.04);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.stepper-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.stepper-editor-header h4 {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dark, #0f172a);
+}
+
+.stepper-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stepper-row-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.step-num-badge {
+  font-size: 11px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0052cc;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-title-input {
+  flex: 2;
+  font-size: 12.5px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-dark, #0f172a);
+  outline: none;
+}
+
+.step-desc-input {
+  flex: 3;
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-dark, #0f172a);
+  outline: none;
+}
+
+.remove-step-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.remove-step-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.add-step-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #0052cc;
+  color: #0052cc;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-step-btn:hover {
+  background: #0052cc;
+  color: #ffffff;
+}
+
+/* Fields Designer on Step 2 */
+.fields-builder-area {
+  margin-top: 16px;
+}
+
+.fields-builder-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.add-field-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark, #0f172a);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-field-chip:hover {
+  border-color: #0052cc;
+  color: #0052cc;
+  transform: translateY(-1px);
+}
+
+.fields-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field-builder-card {
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: var(--card-bg, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: border-color 0.15s;
+}
+
+.field-builder-card:hover {
+  border-color: #94a3b8;
+}
+
+.field-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.field-type-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0, 82, 204, 0.08);
+  color: #0052cc;
+  text-transform: uppercase;
+}
+
+body.dark-theme .field-type-tag {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+
+.field-inline-label-input {
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-dark, #0f172a);
+  flex: 1;
+}
+
+.field-inline-label-input:focus {
+  border-color: #0052cc;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.field-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.req-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-light, #64748b);
+  cursor: pointer;
+}
+
+/* Review Step */
+.review-card-summary {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+body.dark-theme .review-card-summary {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.summary-headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.summary-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark, #0f172a);
+}
+
+.summary-stepper-preview {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-top: 12px;
+}
+
+.preview-step-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e2e8f0);
+  font-size: 11.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+body.dark-theme .preview-step-pill {
+  background: #1e293b;
+}
+
+/* Modal Footer */
+.modal-footer-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 28px;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+}
+
+.footer-left-hint {
+  font-size: 12px;
+  color: var(--text-light, #94a3b8);
+}
+
+.footer-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LucideIcon from '../components/LucideIcon';
+import CreateFormModal from '../components/CreateFormModal';
 import gsap from 'gsap';
-
 
 export default function Dashboard() {
   const navigate = useNavigate();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const [timeframe, setTimeframe] = useState('30D');
@@ -58,7 +58,7 @@ export default function Dashboard() {
                     <LucideIcon name="layout-template" /> See all templates
                 </button>
 
-                <button className="btn-primary" onClick={() => {}}>
+                <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
                     <LucideIcon name="file-plus" /> Create new form
                 </button>
 
@@ -325,7 +325,7 @@ export default function Dashboard() {
             {/*  Recent Submissions  */}
             <div className="card investment-card">
                 <div className="card-header">
-                    <div className="card-title">Recent Submissions</div>
+                    <div className="card-title" style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-dark)', margin: 0 }}>Recent Submissions</div>
                     <a href="#" className="view-all">View All</a>
                 </div>
 
@@ -408,7 +408,7 @@ export default function Dashboard() {
             </div>
 
         </div>
-
+        <CreateFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }

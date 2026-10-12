@@ -62,7 +62,7 @@ export default function Result() {
                 </div>
 
                 {/*  Auto-Messaging Templates  */}
-                <div style={{"display":"grid","gridTemplateColumns":"1fr 1fr","gap":"24px"}}>
+                <div className="results-templates-grid">
                     {/*  Admitted Template  */}
                     <div className="card" style={{"padding":"24px"}}>
                         <div style={{"display":"flex","alignItems":"center","justifyContent":"space-between","marginBottom":"20px"}}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import { ChevronDown, RefreshCcw, Moon, Sun, Bell, Command, Search } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { ChevronDown, RefreshCcw, Moon, Sun, Bell, Search, Menu, X, FileText, CheckCircle2, AlertCircle, Printer, Volume2, Award, LayoutDashboard } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
 import ProfileDropdown from './ProfileDropdown';
 
@@ -8,6 +8,11 @@ export default function Header({ onOpenCommandPalette }) {
   const [isDark, setIsDark] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileApplicationsOpen, setMobileApplicationsOpen] = useState(true);
+  const [mobilePaymentsOpen, setMobilePaymentsOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('darkMode');
@@ -18,12 +23,23 @@ export default function Header({ onOpenCommandPalette }) {
     }
   }, []);
 
+  // Close menus & popovers when location changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
+    setIsNotifOpen(false);
+    setIsProfileOpen(false);
+  }, [location.pathname]);
+
   // Close popovers when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!e.target.closest('.user-actions')) {
         setIsNotifOpen(false);
         setIsProfileOpen(false);
+      }
+      if (!e.target.closest('.nav-dropdown')) {
+        setActiveDropdown(null);
       }
     };
     document.addEventListener('click', handleClickOutside);
@@ -44,158 +60,297 @@ export default function Header({ onOpenCommandPalette }) {
     }
   };
 
+  const toggleDropdown = (e, name) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveDropdown(prev => prev === name ? null : name);
+  };
+
   return (
-    <nav className="navbar" style={{ opacity: 1, transform: 'none' }}>
-      <div 
-        id="tour-brand" 
-        className="logo" 
-        style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '32px', fontWeight: 700, letterSpacing: '-1px', padding: '6px 16px 6px 12px', cursor: 'pointer' }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '32px', height: '32px' }}>
-          <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
-          <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
-          <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
-        </svg>
-        <div style={{ display: 'flex' }}>
-          <span style={{ color: '#0052cc' }}>form</span><span style={{ color: '#ffcc00' }}>box</span>
-        </div>
-      </div>
-
-      <div className="nav-links">
-        <NavLink id="tour-nav-dashboard" to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Dashboard</NavLink>
-        <NavLink id="tour-nav-forms" to="/forms" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', color: 'inherit' }}>Forms</NavLink>
-        
-        <div id="tour-nav-applications" className="nav-dropdown">
-          <div className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Applications <ChevronDown size={14} />
-          </div>
-          <div className="nav-dropdown-content">
-            <NavLink to="/completed" className="mega-menu-item">
-              <div className="mega-icon-box" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              </div>
-              <div className="mega-text-box">
-                <div className="mega-title">Completed Applications</div>
-                <div className="mega-subtitle">Successfully submitted forms</div>
-              </div>
-            </NavLink>
-            <NavLink to="/abandoned" className="mega-menu-item">
-              <div className="mega-icon-box" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-              </div>
-              <div className="mega-text-box">
-                <div className="mega-title">Abandoned Applications</div>
-                <div className="mega-subtitle">Users who dropped off</div>
-              </div>
-            </NavLink>
-            <NavLink to="/exam-slip" className="mega-menu-item">
-              <div className="mega-icon-box" style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              </div>
-              <div className="mega-text-box">
-                <div className="mega-title">Exam Slips</div>
-                <div className="mega-subtitle">Generate & print exam slips</div>
-              </div>
-            </NavLink>
-          </div>
-        </div>
-
-        <div id="tour-nav-payments" className="nav-dropdown">
-          <div className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Payments <ChevronDown size={14} />
-          </div>
-          <div className="nav-dropdown-content">
-            <NavLink to="/requery" className="mega-menu-item">
-              <div className="mega-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
-                <RefreshCcw size={18} />
-              </div>
-              <div className="mega-text-box">
-                <div className="mega-title">Requery Payment</div>
-                <div className="mega-subtitle">Verify payment status</div>
-              </div>
-            </NavLink>
-          </div>
-        </div>
-        <NavLink id="tour-nav-announcements" to="/announcements" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Announcement</NavLink>
-        <NavLink id="tour-nav-results" to="/result" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', color: 'inherit' }}>Results</NavLink>
-      </div>
-
-      <div className="user-actions" style={{ position: 'relative' }}>
-        {/* Quick Search / Command Palette Trigger */}
-        <button 
-          type="button"
-          id="tour-cmd-trigger"
-          className="cmd-trigger-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (typeof onOpenCommandPalette === 'function') {
-              onOpenCommandPalette();
-            }
-            window.dispatchEvent(new CustomEvent('formboxx:open-command-palette'));
-          }}
-          title="Command Palette & Universal Search (⌘K / Ctrl+K)"
-          aria-label="Open command palette"
-        >
-          <Search size={14} />
-          <span style={{ fontWeight: 500 }}>Search...</span>
-          <kbd className="cmd-trigger-kbd">⌘K</kbd>
-        </button>
-
-        <button id="tour-theme-toggle" className="icon-btn theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode">
-          {isDark ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
-
-        {/* Notification Bell Button */}
-        <button 
-          id="tour-notif-bell"
-          className="icon-btn" 
-          onClick={() => {
-            setIsNotifOpen(!isNotifOpen);
-            setIsProfileOpen(false);
-          }}
-          style={{ position: 'relative' }}
-          aria-label="View notifications"
-        >
-          <Bell size={20} />
-          <span style={{
-            position: 'absolute',
-            top: '8px',
-            right: '8px',
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            background: '#0052cc',
-            border: '2px solid var(--card-bg)'
-          }} />
-        </button>
-
-        {/* Notification Dropdown Component */}
-        <NotificationCenter 
-          isOpen={isNotifOpen} 
-          onClose={() => setIsNotifOpen(false)} 
-        />
-
-        {/* User Profile Avatar with Online Status */}
+    <>
+      <nav className="navbar" style={{ opacity: 1, transform: 'none' }}>
         <div 
-          id="tour-user-avatar"
-          className="user-avatar" 
-          onClick={() => {
-            setIsProfileOpen(!isProfileOpen);
-            setIsNotifOpen(false);
-          }}
-          style={{ cursor: 'pointer', position: 'relative' }}
-          title="User Account Menu"
+          id="tour-brand" 
+          className="logo" 
+          onClick={() => window.location.href = '/'}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '32px', fontWeight: 700, letterSpacing: '-1px', padding: '6px 12px', cursor: 'pointer' }}
         >
-          <span>AD</span>
+          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '32px', height: '32px' }}>
+            <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+            <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+            <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+          </svg>
+          <div style={{ display: 'flex' }}>
+            <span style={{ color: '#0052cc' }}>form</span><span style={{ color: '#ffcc00' }}>box</span>
+          </div>
         </div>
 
-        {/* Profile Dropdown Component */}
-        <ProfileDropdown 
-          isOpen={isProfileOpen} 
-          onClose={() => setIsProfileOpen(false)} 
-        />
-      </div>
-    </nav>
+        {/* Desktop Navigation Links */}
+        <div className="nav-links">
+          <NavLink id="tour-nav-dashboard" to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Dashboard</NavLink>
+          <NavLink id="tour-nav-forms" to="/forms" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', color: 'inherit' }}>Forms</NavLink>
+          
+          <div id="tour-nav-applications" className={`nav-dropdown ${activeDropdown === 'applications' ? 'open' : ''}`}>
+            <div 
+              className="nav-link" 
+              onClick={(e) => toggleDropdown(e, 'applications')}
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
+            >
+              Applications <ChevronDown size={14} style={{ transform: activeDropdown === 'applications' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+            </div>
+            <div className="nav-dropdown-content">
+              <NavLink to="/completed" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
+                  <CheckCircle2 size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">Completed Applications</div>
+                  <div className="mega-subtitle">Successfully submitted forms</div>
+                </div>
+              </NavLink>
+              <NavLink to="/abandoned" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+                  <AlertCircle size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">Abandoned Applications</div>
+                  <div className="mega-subtitle">Users who dropped off</div>
+                </div>
+              </NavLink>
+              <NavLink to="/exam-slip" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1' }}>
+                  <Printer size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">Exam Slips</div>
+                  <div className="mega-subtitle">Generate & print exam slips</div>
+                </div>
+              </NavLink>
+            </div>
+          </div>
+
+          <div id="tour-nav-payments" className={`nav-dropdown ${activeDropdown === 'payments' ? 'open' : ''}`}>
+            <div 
+              className="nav-link" 
+              onClick={(e) => toggleDropdown(e, 'payments')}
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
+            >
+              Payments <ChevronDown size={14} style={{ transform: activeDropdown === 'payments' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+            </div>
+            <div className="nav-dropdown-content">
+              <NavLink to="/requery" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
+                  <RefreshCcw size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">Requery Payment</div>
+                  <div className="mega-subtitle">Verify payment status</div>
+                </div>
+              </NavLink>
+            </div>
+          </div>
+          <NavLink id="tour-nav-announcements" to="/announcements" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Announcement</NavLink>
+          <NavLink id="tour-nav-results" to="/result" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', color: 'inherit' }}>Results</NavLink>
+        </div>
+
+        {/* User Actions & Mobile Hamburger */}
+        <div className="user-actions" style={{ position: 'relative' }}>
+          {/* Quick Search / Command Palette Trigger */}
+          <button 
+            type="button"
+            id="tour-cmd-trigger"
+            className="cmd-trigger-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof onOpenCommandPalette === 'function') {
+                onOpenCommandPalette();
+              }
+              window.dispatchEvent(new CustomEvent('formboxx:open-command-palette'));
+            }}
+            title="Command Palette & Universal Search (⌘K / Ctrl+K)"
+            aria-label="Open command palette"
+          >
+            <Search size={16} />
+            <span className="cmd-text-label" style={{ fontWeight: 500 }}>Search...</span>
+            <kbd className="cmd-trigger-kbd">⌘K</kbd>
+          </button>
+
+          <button id="tour-theme-toggle" className="icon-btn theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode">
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+
+          {/* Notification Bell Button */}
+          <button 
+            id="tour-notif-bell"
+            className="icon-btn" 
+            onClick={() => {
+              setIsNotifOpen(!isNotifOpen);
+              setIsProfileOpen(false);
+            }}
+            style={{ position: 'relative' }}
+            aria-label="View notifications"
+          >
+            <Bell size={20} />
+            <span style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#0052cc',
+              border: '2px solid var(--card-bg)'
+            }} />
+          </button>
+
+          {/* Notification Dropdown Component */}
+          <NotificationCenter 
+            isOpen={isNotifOpen} 
+            onClose={() => setIsNotifOpen(false)} 
+          />
+
+          {/* User Profile Avatar with Online Status */}
+          <div 
+            id="tour-user-avatar"
+            className="user-avatar" 
+            onClick={() => {
+              setIsProfileOpen(!isProfileOpen);
+              setIsNotifOpen(false);
+            }}
+            style={{ cursor: 'pointer', position: 'relative' }}
+            title="User Account Menu"
+          >
+            <span>AD</span>
+          </div>
+
+          {/* Profile Dropdown Component */}
+          <ProfileDropdown 
+            isOpen={isProfileOpen} 
+            onClose={() => setIsProfileOpen(false)} 
+          />
+
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            className="icon-btn mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            title="Navigation Menu"
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation Drawer / Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="mobile-nav-drawer">
+          <div className="mobile-nav-inner">
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <LayoutDashboard size={18} />
+              <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink 
+              to="/forms" 
+              className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <FileText size={18} />
+              <span>Forms Library</span>
+            </NavLink>
+
+            {/* Mobile Applications Section */}
+            <div className="mobile-nav-group">
+              <div 
+                className="mobile-nav-group-header"
+                onClick={() => setMobileApplicationsOpen(!mobileApplicationsOpen)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <CheckCircle2 size={18} color="#10b981" />
+                  <span style={{ fontWeight: 600 }}>Applications</span>
+                </div>
+                <ChevronDown size={16} style={{ transform: mobileApplicationsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              </div>
+
+              {mobileApplicationsOpen && (
+                <div className="mobile-nav-sublist">
+                  <NavLink 
+                    to="/completed" 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>Completed Applications</span>
+                  </NavLink>
+                  <NavLink 
+                    to="/abandoned" 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>Abandoned Applications</span>
+                  </NavLink>
+                  <NavLink 
+                    to="/exam-slip" 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>Exam Slips</span>
+                  </NavLink>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Payments Section */}
+            <div className="mobile-nav-group">
+              <div 
+                className="mobile-nav-group-header"
+                onClick={() => setMobilePaymentsOpen(!mobilePaymentsOpen)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <RefreshCcw size={18} color="#3b82f6" />
+                  <span style={{ fontWeight: 600 }}>Payments</span>
+                </div>
+                <ChevronDown size={16} style={{ transform: mobilePaymentsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              </div>
+
+              {mobilePaymentsOpen && (
+                <div className="mobile-nav-sublist">
+                  <NavLink 
+                    to="/requery" 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>Requery Payment</span>
+                  </NavLink>
+                </div>
+              )}
+            </div>
+
+            <NavLink 
+              to="/announcements" 
+              className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Volume2 size={18} />
+              <span>Announcements</span>
+            </NavLink>
+
+            <NavLink 
+              to="/result" 
+              className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Award size={18} />
+              <span>Results & Messaging</span>
+            </NavLink>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

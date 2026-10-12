@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formbox - Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        body.dark-theme {
+            background: #0b1329;
+            color: #f8fafc;
+        }
+
+        .login-card-container {
+            display: flex;
+            width: 100%;
+            max-width: 1140px;
+            min-height: 680px;
+            background: #ffffff;
+            border-radius: 36px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        body.dark-theme .login-card-container {
+            background: #141c2e;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        }
+
+        .login-form-pane {
+            flex: 1;
+            max-width: 520px;
+            padding: 56px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 28px;
+            text-decoration: none;
+        }
+
+        .login-brand-text {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
+
+        .brand-blue { color: #0052cc; }
+        .brand-gold { color: #ffcc00; }
+
+        .login-header {
+            margin-bottom: 28px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        body.dark-theme .login-title {
+            color: #f8fafc;
+        }
+
+        .login-subtitle {
+            font-size: 14.5px;
+            color: #64748b;
+        }
+
+        body.dark-theme .login-subtitle {
+            color: #94a3b8;
+        }
+
+        .social-auth-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .social-auth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 13px 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: none !important;
+            font-family: inherit;
+        }
+
+        .social-auth-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        body.dark-theme .social-auth-btn {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .social-auth-btn:hover {
+            background: #27354a;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        body.dark-theme .divider-line {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider-text {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .login-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .login-field-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        body.dark-theme .login-field-label {
+            color: #cbd5e1;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 13px 16px;
+            background: #f1f5f9;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .login-input:focus {
+            background: #ffffff;
+            border-color: #0052cc;
+            box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.12) !important;
+        }
+
+        body.dark-theme .login-input {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        body.dark-theme .login-input:focus {
+            background: #141c2e;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .password-input-wrapper .login-input {
+            padding-right: 46px;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            box-shadow: none !important;
+        }
+
+        .login-aux-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .remember-checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        body.dark-theme .remember-checkbox-label {
+            color: #94a3b8;
+        }
+
+        .remember-checkbox-label input[type="checkbox"] {
+            accent-color: #0052cc;
+        }
+
+        .forgot-password-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0052cc;
+            text-decoration: underline;
+        }
+
+        body.dark-theme .forgot-password-link {
+            color: #60a5fa;
+        }
+
+        .login-submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: #0052cc;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            box-shadow: none !important;
+            font-family: inherit;
+        }
+
+        .login-submit-btn:hover {
+            background: #0043a8;
+        }
+
+        .login-switch-footer {
+            text-align: center;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        body.dark-theme .login-switch-footer {
+            color: #94a3b8;
+        }
+
+        .signup-link {
+            font-weight: 600;
+            color: #0052cc;
+            text-decoration: underline;
+        }
+
+        body.dark-theme .signup-link {
+            color: #60a5fa;
+        }
+
+        .login-visual-pane {
+            flex: 1.1;
+            padding: 24px 24px 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-visual-portal {
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
+            position: relative;
+            background: #0f172a;
+            border-radius: 28px 60px 28px 60px;
+            overflow: hidden;
+            clip-path: polygon(
+                0% 4%, 
+                4% 0%, 
+                80% 0%, 
+                100% 20%, 
+                100% 96%, 
+                96% 100%, 
+                15% 100%, 
+                0% 85%
+            );
+        }
+
+        .login-visual-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.02);
+            transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+        }
+
+        .login-visual-portal:hover .login-visual-img {
+            transform: scale(1.05);
+        }
+
+        .login-visual-caption {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 36px 40px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 100%);
+            color: #ffffff;
+            z-index: 2;
+            text-align: right;
+            max-width: 440px;
+            margin-left: auto;
+        }
+
+        .login-visual-caption h2 {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .login-visual-caption p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 980px) {
+            .login-card-container {
+                flex-direction: column-reverse;
+                max-width: 540px;
+                border-radius: 28px;
+            }
+
+            .login-form-pane {
+                max-width: 100%;
+                padding: 36px 32px 44px 32px;
+            }
+
+            .login-visual-pane {
+                padding: 20px 20px 0 20px;
+            }
+
+            .login-visual-portal {
+                min-height: 240px;
+                height: 240px;
+                clip-path: none;
+                border-radius: 20px;
+            }
+
+            .login-visual-caption {
+                padding: 20px;
+                text-align: left;
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .login-visual-caption h2 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card-container">
+        <!-- Left Section: Form -->
+        <div class="login-form-pane">
+            <a href="index.html" class="login-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 34px; height: 34px;">
+                    <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                    <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                    <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+                <div class="login-brand-text">
+                    <span class="brand-blue">form</span><span class="brand-gold">box</span>
+                </div>
+            </a>
+
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Let's login to manage your forms & submissions</p>
+            </div>
+
+            <div class="social-auth-group">
+                <button type="button" class="social-auth-btn" onclick="window.location.href='index.html'">
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+
+                <button type="button" class="social-auth-btn" onclick="window.location.href='index.html'">
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="#1877F2">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Continue with Facebook</span>
+                </button>
+            </div>
+
+            <div class="login-divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">Or</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <form class="login-form" onsubmit="event.preventDefault(); window.location.href='index.html';">
+                <div class="login-field-group">
+                    <label class="login-field-label">Email</label>
+                    <input type="email" required class="login-input" value="admin@formbox.com" placeholder="name@company.com">
+                </div>
+
+                <div class="login-field-group">
+                    <label class="login-field-label">Password</label>
+                    <div class="password-input-wrapper">
+                        <input id="pwd-input" type="password" required class="login-input" value="12345678" placeholder="Enter password">
+                        <button type="button" class="toggle-password-btn" onclick="const p = document.getElementById('pwd-input'); p.type = p.type === 'password' ? 'text' : 'password';">
+                            <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="login-aux-row">
+                    <label class="remember-checkbox-label">
+                        <input type="checkbox" checked>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password-link" onclick="alert('Password reset link sent.'); return false;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-submit-btn">Login</button>
+
+                <div class="login-switch-footer">
+                    Don't have an account? <a href="candidate-dashboard.html" class="signup-link">Sign Up</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Section: Visual Portal -->
+        <div class="login-visual-pane">
+            <div class="login-visual-portal">
+                <img src="login-hero.png" alt="Formbox portal illustration" class="login-visual-img">
+                <div class="login-visual-caption">
+                    <h2>Smart form building & effortless candidate submissions.</h2>
+                    <p>Trusted by institutions and admissions teams worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-theme');
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>

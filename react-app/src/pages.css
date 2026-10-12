@@ -3000,12 +3000,12 @@
 }
 
 /* Micro-animations and hover effects */
-.card, .stat-card, .template-card, .form-card {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.card, .stat-card, .template-card, .form-card, .category-card {
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
-.card:hover, .stat-card:hover, .template-card:hover, .form-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+.card:hover, .stat-card:hover, .template-card:hover, .form-card:hover, .category-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .btn-primary, .btn-action, .btn-generate, .btn-secondary {

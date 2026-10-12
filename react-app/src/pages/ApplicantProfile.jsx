@@ -34,7 +34,7 @@ export default function ApplicantProfile() {
 
             
         
-        <div className="profile-layout" style={{"display":"grid","gridTemplateColumns":"1fr 2fr","gap":"24px","marginTop":"24px"}}>
+        <div className="profile-layout profile-layout-grid">
             {/*  Left Column: Profile Card  */}
             <div className="profile-sidebar">
                 <div className="card" style={{"padding":"24px","display":"flex","flexDirection":"column","alignItems":"center","textAlign":"center","borderRadius":"16px","background":"var(--card-bg)","border":"1px solid var(--border-color)"}}>
@@ -137,7 +137,7 @@ export default function ApplicantProfile() {
                         <button className="btn-action" style={{"padding":"6px 12px"}}><LucideIcon name="printer" style={{"width":"14px","height":"14px"}} /> Print Application</button>
                     </div>
                     
-                    <div style={{"display":"grid","gridTemplateColumns":"1fr 1fr","gap":"24px"}}>
+                    <div className="profile-info-grid">
                         <div>
                             <div style={{"fontSize":"11px","color":"var(--text-light)","fontWeight":"500","marginBottom":"4px"}}>Previous School</div>
                             <div style={{"fontSize":"13px","color":"var(--text-dark)","fontWeight":"500","padding":"12px","background":"rgba(0,0,0,0.02)","borderRadius":"8px","border":"1px solid var(--border-color)"}}>Lagos High School</div>

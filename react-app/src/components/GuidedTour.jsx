@@ -5,77 +5,46 @@ import './GuidedTour.css';
 
 export const TOUR_STEPS = [
   {
-    target: null,
-    placement: 'center',
-    title: 'Welcome to Formbox! 🎉',
-    badge: 'Quick Tour',
-    description: 'Welcome to your centralized application and examination administrative hub. Let’s take a quick guided tour across the platform’s core features.'
-  },
-  {
-    target: '#tour-brand',
-    title: 'Institutional Workspace 🏛️',
-    badge: 'Brand & Home',
-    description: 'This is your institutional brand and quick home button. Wherever you are in the application, clicking here brings you straight back to the main dashboard.'
-  },
-  {
     target: '#tour-nav-dashboard',
-    title: 'Executive Dashboard 📊',
-    badge: 'Analytics',
-    description: 'Monitor real-time submission metrics, application traffic volume, conversion percentages, and recent applicant submissions all in one place.'
+    title: 'Dashboard 📊',
+    badge: 'Overview',
+    description: 'Your central analytics hub to track application volume, submission trends, and real-time candidate metrics at a glance.'
   },
   {
     target: '#tour-nav-forms',
-    title: 'Form Management & Builder 📝',
-    badge: 'Forms & Templates',
-    description: 'Create customized multi-step forms or pick from ready-to-use admission, scholarship, and recruitment templates with tailored fees and stages.'
+    title: 'Forms Library 📝',
+    badge: 'Form Builder',
+    description: 'Create and customize multi-step admission forms, configure fees and stages, or pick from pre-built institutional templates.'
   },
   {
     target: '#tour-nav-applications',
-    title: 'Application Pipeline 📂',
-    badge: 'Tracking',
-    description: 'Track incoming student applications end-to-end. Filter completed entries, re-engage abandoned drafts, and generate official candidate exam slips.'
+    title: 'Applications 📂',
+    badge: 'Pipeline',
+    description: 'Track candidate submissions across every stage—manage completed entries, follow up on abandoned drafts, and generate official exam slips.'
   },
   {
     target: '#tour-nav-payments',
-    title: 'Payments & Verification 💳',
+    title: 'Payments 💳',
     badge: 'Finance',
-    description: 'Manage application fees and financial records. Easily requery and verify pending transactions with payment providers with a single click.'
+    description: 'Monitor application fee transactions and verify pending applicant payments directly with payment gateways.'
   },
   {
     target: '#tour-nav-announcements',
-    title: 'Broadcasts & Alerts 📢',
-    badge: 'Communications',
-    description: 'Publish important notices, schedule updates, and exam deadlines directly to applicant portals and administrative dashboards.'
+    title: 'Announcements 📢',
+    badge: 'Broadcasts',
+    description: 'Broadcast critical notices, schedule changes, and deadlines directly to candidates and staff across portals.'
   },
   {
     target: '#tour-nav-results',
-    title: 'Examination Results 🏆',
-    badge: 'Scoring',
+    title: 'Results 🏆',
+    badge: 'Examination',
     description: 'Manage candidate assessment outcomes, publish cut-off marks, and verify test scorecards quickly and transparently.'
   },
   {
     target: '#tour-cmd-trigger',
-    title: 'Universal Search & Command Palette 🔍',
+    title: 'Quick Search 🔍',
     badge: 'Search & ⌘K',
-    description: 'Quickly find candidates by name, jump across navigation pages, change settings, and execute administrative actions with instant search (⌘K or Ctrl+K).'
-  },
-  {
-    target: '#tour-theme-toggle',
-    title: 'Theme & Preferences 🌙',
-    badge: 'Personalization',
-    description: 'Switch between light and dark mode anytime to suit your preference with custom visual styling and high contrast.'
-  },
-  {
-    target: '#tour-notif-bell',
-    title: 'Real-Time Notification Hub 🔔',
-    badge: 'Alerts',
-    description: 'Review critical system alerts, recent candidate submissions, and payment verifications without leaving your active workflow.'
-  },
-  {
-    target: '#tour-user-avatar',
-    title: 'Account & System Settings ⚙️',
-    badge: 'Configuration',
-    description: 'Customize institutional profiles, default examination dates, test venue configurations, security, and administrative preferences right from your account menu.'
+    description: 'Instantly find candidates by name, jump directly to any page, and execute quick actions from anywhere (⌘K or Ctrl+K).'
   }
 ];
 

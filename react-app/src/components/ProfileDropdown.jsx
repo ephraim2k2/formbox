@@ -78,9 +78,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
           className="profile-logout-btn"
           onClick={() => {
             onClose();
-            if (window.confirm('Are you sure you want to log out?')) {
-              navigate('/');
-            }
+            navigate('/login');
           }}
         >
           <LogOut size={15} />

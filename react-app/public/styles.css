@@ -394,6 +394,10 @@ body {
   transition: background 0.3s ease;
   border: 1px solid var(--border-color);
 }
+.card:hover, .category-card:hover, .overview-card:hover, .recent-card:hover, .investment-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
 
 /* Overview Card */
 .overview-card {
@@ -568,7 +572,7 @@ body.dark-theme .chart-bar {
 }
 .card-title {
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 600;
   color: var(--text-dark);
 }
 .view-all {
@@ -819,7 +823,7 @@ body.dark-theme .chart-bar {
     align-items: center;
     margin-bottom: 16px;
 }
-.card-title {
+.cards-grid .card-title {
     font-size: 14px;
     font-weight: 600;
     color: var(--text-dark);

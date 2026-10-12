@@ -15,12 +15,16 @@ import ApplicantProfile from './pages/ApplicantProfile';
 import Result from './pages/Result';
 import ViewForm from './pages/ViewForm';
 import CandidateDashboard from './pages/CandidateDashboard';
+import Login from './pages/Login';
 import './index.css';
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Authentication */}
+        <Route path="/login" element={<Login />} />
+        
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="forms" element={<Forms />} />

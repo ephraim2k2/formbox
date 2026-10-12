@@ -179,3 +179,11 @@ body.dark-theme .profile-menu-item:hover {
 .profile-logout-btn:hover {
   background: rgba(239, 68, 68, 0.08);
 }
+
+@media (max-width: 600px) {
+  .profile-dropdown {
+    right: 0 !important;
+    width: 250px;
+    max-width: calc(100vw - 24px);
+  }
+}

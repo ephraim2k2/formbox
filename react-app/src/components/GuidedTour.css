@@ -243,21 +243,23 @@ body.dark-theme .tour-btn-prev:hover {
   align-items: center;
   gap: 6px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.25);
+  box-shadow: none;
 }
 
 .tour-btn-next:hover {
   background: #0040a3;
   transform: translateY(-1px);
+  box-shadow: none;
 }
 
 body.dark-theme .tour-btn-next {
   background: #2563eb;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  box-shadow: none;
 }
 
 body.dark-theme .tour-btn-next:hover {
   background: #1d4ed8;
+  box-shadow: none;
 }
 
 /* Close Icon in corner */
