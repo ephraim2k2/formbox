@@ -1,26 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 import gsap from 'gsap';
 import './GuidedTour.css';
 
-export const TOUR_STEPS = [
+const getTourSteps = (isOrganization) => isOrganization ? [
   {
     target: '#tour-nav-dashboard',
     title: 'Dashboard 📊',
     badge: 'Overview',
-    description: 'Your central analytics hub to track application volume, submission trends, and real-time candidate metrics at a glance.'
+    description: 'Your central operations hub to track recruitment pipelines, review stages, and real-time applicant conversion metrics at a glance.'
   },
   {
     target: '#tour-nav-forms',
     title: 'Forms Library 📝',
     badge: 'Form Builder',
-    description: 'Create and customize multi-step admission forms, configure fees and stages, or pick from pre-built institutional templates.'
+    description: 'Create and customize recruitment applications, onboarding forms, grant requests, or pick from pre-built corporate templates.'
   },
   {
     target: '#tour-nav-applications',
-    title: 'Applications 📂',
+    title: 'Applications & Assessments 📂',
     badge: 'Pipeline',
-    description: 'Track candidate submissions across every stage—manage completed entries, follow up on abandoned drafts, and generate official exam slips.'
+    description: 'Track applicant submissions across every hiring stage—manage completed dossiers, follow up on incomplete drafts, dispatch assessment invitations, and evaluate candidate outcomes.'
+  },
+  {
+    target: '#tour-nav-payments',
+    title: 'Payments 💳',
+    badge: 'Finance',
+    description: 'Monitor application fees and corporate transactions, and verify pending applicant payments directly with payment gateways.'
+  },
+  {
+    target: '#tour-nav-announcements',
+    title: 'Announcements 📢',
+    badge: 'Broadcasts',
+    description: 'Broadcast company updates, assessment schedules, and interview deadlines directly to candidates and team reviewers across portals.'
+  },
+  {
+    target: '#tour-cmd-trigger',
+    title: 'Quick Search 🔍',
+    badge: 'Search & ⌘K',
+    description: 'Instantly find applicants and reviewers by name, jump directly to any page, and execute quick actions from anywhere (⌘K or Ctrl+K).'
+  }
+] : [
+  {
+    target: '#tour-nav-dashboard',
+    title: 'Dashboard 📊',
+    badge: 'Overview',
+    description: 'Your central analytics hub to track application volume, submission trends, and real-time student admission metrics at a glance.'
+  },
+  {
+    target: '#tour-nav-forms',
+    title: 'Forms Library 📝',
+    badge: 'Form Builder',
+    description: 'Create and customize multi-step admission forms, configure entrance fees and stages, or pick from pre-built school templates.'
+  },
+  {
+    target: '#tour-nav-applications',
+    title: 'Applications & Results 📂',
+    badge: 'Pipeline',
+    description: 'Track candidate submissions across every stage—manage completed entries, follow up on incomplete applications, print exam slips, and review examination results.'
   },
   {
     target: '#tour-nav-payments',
@@ -32,23 +70,21 @@ export const TOUR_STEPS = [
     target: '#tour-nav-announcements',
     title: 'Announcements 📢',
     badge: 'Broadcasts',
-    description: 'Broadcast critical notices, schedule changes, and deadlines directly to candidates and staff across portals.'
-  },
-  {
-    target: '#tour-nav-results',
-    title: 'Results 🏆',
-    badge: 'Examination',
-    description: 'Manage candidate assessment outcomes, publish cut-off marks, and verify test scorecards quickly and transparently.'
+    description: 'Broadcast critical notices, entrance examination dates, and deadlines directly to students, parents, and staff across portals.'
   },
   {
     target: '#tour-cmd-trigger',
     title: 'Quick Search 🔍',
     badge: 'Search & ⌘K',
-    description: 'Instantly find candidates by name, jump directly to any page, and execute quick actions from anywhere (⌘K or Ctrl+K).'
+    description: 'Instantly find candidates and parents by name, jump directly to any page, and execute quick actions from anywhere (⌘K or Ctrl+K).'
   }
 ];
 
+export const TOUR_STEPS = getTourSteps(false);
+
 export default function GuidedTour({ isOpen, onClose }) {
+  const { isOrganization } = useWorkspace();
+  const tourSteps = getTourSteps(isOrganization);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState(null);
   const cardRef = useRef(null);
@@ -68,7 +104,7 @@ export default function GuidedTour({ isOpen, onClose }) {
     return () => window.removeEventListener('formboxx:start-tour', handleStart);
   }, []);
 
-  const step = TOUR_STEPS[currentStepIndex];
+  const step = tourSteps[currentStepIndex];
 
   // Update target bounding box without route changes
   const updatePosition = () => {
@@ -128,7 +164,7 @@ export default function GuidedTour({ isOpen, onClose }) {
   if (!isOpen || !step) return null;
 
   const handleNext = () => {
-    if (currentStepIndex < TOUR_STEPS.length - 1) {
+    if (currentStepIndex < tourSteps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
     } else {
       handleComplete();
@@ -222,7 +258,7 @@ export default function GuidedTour({ isOpen, onClose }) {
 
         <div className="tour-tooltip-badge">
           <Sparkles size={12} />
-          <span>{step.badge} • Step {currentStepIndex + 1} of {TOUR_STEPS.length}</span>
+          <span>{step.badge} • Step {currentStepIndex + 1} of {tourSteps.length}</span>
         </div>
 
         <h3 className="tour-tooltip-title">{step.title}</h3>
@@ -230,7 +266,7 @@ export default function GuidedTour({ isOpen, onClose }) {
 
         <div className="tour-tooltip-footer">
           <div className="tour-step-dots">
-            {TOUR_STEPS.map((_, idx) => (
+            {tourSteps.map((_, idx) => (
               <div
                 key={idx}
                 className={`tour-step-dot ${idx === currentStepIndex ? 'active' : ''}`}
@@ -250,7 +286,7 @@ export default function GuidedTour({ isOpen, onClose }) {
             )}
 
             <button className="tour-btn-next" onClick={handleNext}>
-              {currentStepIndex === TOUR_STEPS.length - 1 ? (
+              {currentStepIndex === tourSteps.length - 1 ? (
                 <>Finish <Check size={14} /></>
               ) : (
                 <>Next <ArrowRight size={14} /></>

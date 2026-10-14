@@ -1,43 +1,16 @@
-import React, { useState } from 'react';
-import { Bell, CheckCheck, Clock, CheckCircle, AlertTriangle, ArrowRight, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bell, CheckCheck, Clock, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 import './NotificationCenter.css';
 
 export default function NotificationCenter({ isOpen, onClose }) {
+  const { terms } = useWorkspace();
   const [filter, setFilter] = useState('all');
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: 'New Application Submitted',
-      description: 'David Olamide submitted an application for 2026 Academic Session.',
-      time: '2 mins ago',
-      type: 'success',
-      unread: true
-    },
-    {
-      id: 2,
-      title: 'Bank Payment Verified',
-      description: 'Payment of ₦25,000 via Paystack confirmed for Sarah Johnson.',
-      time: '24 mins ago',
-      type: 'payment',
-      unread: true
-    },
-    {
-      id: 3,
-      title: 'Exam Hall Capacity Alert',
-      description: 'Lagos Tech Hub has reached 90% capacity (225 / 250 seats).',
-      time: '2 hours ago',
-      type: 'warning',
-      unread: true
-    },
-    {
-      id: 4,
-      title: 'System Security Update',
-      description: 'Two-factor authentication was activated for admin account.',
-      time: '1 day ago',
-      type: 'info',
-      unread: false
-    }
-  ]);
+  const [notifications, setNotifications] = useState(terms.notifications);
+
+  useEffect(() => {
+    setNotifications(terms.notifications);
+  }, [terms]);
 
   const markAllRead = () => {
     setNotifications(notifications.map(n => ({ ...n, unread: false })));

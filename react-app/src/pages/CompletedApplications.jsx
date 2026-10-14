@@ -1,65 +1,38 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LucideIcon from '../components/LucideIcon';
 import { TableSkeletonRows } from '../components/Skeleton';
+import { useWorkspace } from '../context/WorkspaceContext';
 import gsap from 'gsap';
 
 export default function CompletedApplications() {
+  const navigate = useNavigate();
+  const { isOrganization, terms } = useWorkspace();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
 
-  const initialApplications = [
-    {
-      id: 1,
-      student: 'David Olamide',
-      initials: 'DO',
-      parent: 'Mr. Olamide',
-      email: 'mr.olamide@example.com',
-      phone: '+234 800 000 0000',
-      date: 'Oct 08, 2026',
-      status: 'admitted'
-    },
-    {
-      id: 2,
-      student: 'Sarah Johnson',
-      initials: 'SJ',
-      parent: 'Mrs. Johnson',
-      email: 'mrs.johnson@example.com',
-      phone: '+234 811 111 1111',
-      date: 'Oct 07, 2026',
-      status: 'review'
-    },
-    {
-      id: 3,
-      student: 'Emeka Uchenna',
-      initials: 'EU',
-      parent: 'Dr. Uchenna',
-      email: 'dr.uchenna@example.com',
-      phone: '+234 822 222 2222',
-      date: 'Oct 06, 2026',
-      status: 'admitted'
-    },
-    {
-      id: 4,
-      student: 'Blessing Adeyemi',
-      initials: 'BA',
-      parent: 'Chief Adeyemi',
-      email: 'chief.adeyemi@example.com',
-      phone: '+234 803 333 4444',
-      date: 'Oct 05, 2026',
-      status: 'review'
-    },
-    {
-      id: 5,
-      student: 'Michael Peters',
-      initials: 'MP',
-      parent: 'Prof. Peters',
-      email: 'peters.fam@example.com',
-      phone: '+234 809 999 1234',
-      date: 'Oct 04, 2026',
-      status: 'rejected'
-    }
+  const schoolApplications = [
+    { id: 1, student: 'David Olamide', initials: 'DO', parent: 'Mr. Olamide', email: 'mr.olamide@example.com', phone: '+234 800 000 0000', date: 'Oct 08, 2026', status: 'admitted' },
+    { id: 2, student: 'Sarah Johnson', initials: 'SJ', parent: 'Mrs. Johnson', email: 'mrs.johnson@example.com', phone: '+234 811 111 1111', date: 'Oct 07, 2026', status: 'review' },
+    { id: 3, student: 'Emeka Uchenna', initials: 'EU', parent: 'Dr. Uchenna', email: 'dr.uchenna@example.com', phone: '+234 822 222 2222', date: 'Oct 06, 2026', status: 'admitted' },
+    { id: 4, student: 'Blessing Adeyemi', initials: 'BA', parent: 'Chief Adeyemi', email: 'chief.adeyemi@example.com', phone: '+234 803 333 4444', date: 'Oct 05, 2026', status: 'review' },
+    { id: 5, student: 'Michael Peters', initials: 'MP', parent: 'Prof. Peters', email: 'peters.fam@example.com', phone: '+234 809 999 1234', date: 'Oct 04, 2026', status: 'rejected' },
   ];
+
+  const orgApplications = [
+    { id: 1, student: 'Amaka Obi', initials: 'AO', parent: 'MTN Nigeria', email: 'amaka.obi@mtn.com', phone: '+234 800 686 0000', date: 'Oct 08, 2026', status: 'shortlisted', programme: 'Graduate Trainee 2026' },
+    { id: 2, student: 'James Haruna', initials: 'JH', parent: 'Stanbic IBTC', email: 'j.haruna@stanbic.com', phone: '+234 811 221 4411', date: 'Oct 07, 2026', status: 'review', programme: 'Experienced Hire – Finance' },
+    { id: 3, student: 'Chidinma Eze', initials: 'CE', parent: 'Dangote Group', email: 'c.eze@dangote.com', phone: '+234 802 993 7721', date: 'Oct 06, 2026', status: 'shortlisted', programme: 'Tech Fellowship Cohort 4' },
+    { id: 4, student: 'Tunde Bakare', initials: 'TB', parent: 'Access Bank', email: 'tunde.b@accessbank.ng', phone: '+234 803 111 5544', date: 'Oct 05, 2026', status: 'review', programme: 'Community Scholarship' },
+    { id: 5, student: 'Ngozi Adeyemi', initials: 'NA', parent: 'Flutterwave', email: 'ngozi@flutterwave.com', phone: '+234 809 441 9903', date: 'Oct 04, 2026', status: 'rejected', programme: 'Summer Internship' },
+  ];
+
+  const initialApplications = isOrganization ? orgApplications : schoolApplications;
+
+  // Status labels per workspace
+  const positiveLabel = isOrganization ? 'Shortlisted' : 'Admitted';
+  const positiveKey = isOrganization ? 'shortlisted' : 'admitted';
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -87,8 +60,8 @@ export default function CompletedApplications() {
       <div className="header-content">
         <div className="welcome-section">
           <div className="welcome-text">
-            <h1>Completed Applications</h1>
-            <h2>Review and manage candidates who have successfully submitted their forms</h2>
+            <h1>{terms.completedApplications}</h1>
+            <h2>{terms.completedSubtitle}</h2>
           </div>
         </div>
       </div>
@@ -100,7 +73,7 @@ export default function CompletedApplications() {
             <LucideIcon name="search" style={{ width: '16px', height: '16px' }} />
             <input 
               type="text" 
-              placeholder="Search by student, parent, or email..." 
+              placeholder={isOrganization ? 'Search by applicant, company, or email...' : 'Search by student, parent, or email...'}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -113,7 +86,7 @@ export default function CompletedApplications() {
             >
               <option value="all">All Statuses</option>
               <option value="review">Under Review</option>
-              <option value="admitted">Admitted</option>
+              <option value={positiveKey}>{positiveLabel}</option>
               <option value="rejected">Rejected</option>
             </select>
             <button className="btn-primary" onClick={() => alert('Exporting completed applications to CSV...')}>
@@ -128,11 +101,11 @@ export default function CompletedApplications() {
             <thead>
               <tr>
                 <th>S/N</th>
-                <th>Student</th>
-                <th>Parent</th>
-                <th>Parent Email</th>
+                <th>{isOrganization ? 'Applicant' : 'Student'}</th>
+                <th>{isOrganization ? 'Organisation / Company' : 'Parent'}</th>
+                <th>{isOrganization ? 'Work Email' : 'Parent Email'}</th>
                 <th>Status</th>
-                <th>Payment Date</th>
+                <th>{isOrganization ? 'Submission Date' : 'Payment Date'}</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -154,6 +127,9 @@ export default function CompletedApplications() {
                         <div className="user-avatar-sm">{item.initials}</div>
                         <div className="user-info">
                           <span className="name">{item.student}</span>
+                          {isOrganization && item.programme && (
+                            <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>{item.programme}</span>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -165,20 +141,21 @@ export default function CompletedApplications() {
                     </td>
                     <td>
                       <span className={`status-badge ${
-                        item.status === 'admitted' ? 'status-success' : 
+                        (item.status === 'admitted' || item.status === 'shortlisted') ? 'status-success' : 
                         item.status === 'rejected' ? 'status-failed' : 'status-pending'
                       }`}>
-                        {item.status === 'admitted' ? 'Admitted' : 
-                         item.status === 'rejected' ? 'Rejected' : 'Under Review'}
+                        {(item.status === 'admitted') ? 'Admitted'
+                         : item.status === 'shortlisted' ? 'Shortlisted'
+                         : item.status === 'rejected' ? 'Rejected' : 'Under Review'}
                       </span>
                     </td>
                     <td>{item.date}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button className="btn-action" title="View Details">
+                        <button className="btn-action" title="View Details" onClick={() => navigate('/applicant-profile')}>
                           <LucideIcon name="eye" style={{ width: '14px', height: '14px' }} />
                         </button>
-                        <button className="btn-action" title="Download Receipt">
+                        <button className="btn-action" title="Download" onClick={() => alert(`Downloading application PDF for ${item.student}...`)}>
                           <LucideIcon name="download" style={{ width: '14px', height: '14px' }} />
                         </button>
                       </div>

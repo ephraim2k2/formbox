@@ -24,10 +24,12 @@ import {
   Eye,
   Check
 } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 import './CandidateDashboard.css';
 
 export default function CandidateDashboard() {
   const navigate = useNavigate();
+  const { isOrganization, workspaceName, terms } = useWorkspace();
 
   // Navigation tab state
   const [activeTab, setActiveTab] = useState('Dashboard');
@@ -46,7 +48,41 @@ export default function CandidateDashboard() {
   const [showTimeDropdown, setShowTimeDropdown] = useState(false);
 
   // Real announcements from admin
-  const adminAnnouncements = [
+  const adminAnnouncements = isOrganization ? [
+    {
+      id: 1,
+      title: '2026 Graduate Trainee Assessment Schedule & Hub Allocation',
+      category: 'Assessment Hub',
+      badge: 'Evaluation',
+      pillar: 'purple',
+      date: 'Oct 10, 2026 • 09:30 AM',
+      amountRef: '₦15,000',
+      summary: 'The In-Person & Remote Aptitude Screening for 2026 intakes has been scheduled at Lagos Assessment Centre.',
+      fullText: `Please be informed that the 2026 Corporate Assessment Session has been officially scheduled for Sunday, November 20, 2026. All shortlisted candidates are required to download and print their official Assessment Invitation slip, which includes designated evaluation suites, biometric verification codes, and instructions. For remote candidates, ensure browser webcam access is pre-tested.`
+    },
+    {
+      id: 2,
+      title: 'Action Required: Verification of University Degree & NYSC Documents',
+      category: 'Verification',
+      badge: 'Urgent',
+      pillar: 'black',
+      date: 'Oct 05, 2026 • 02:15 PM',
+      amountRef: 'Dossier',
+      summary: 'Shortlisted candidates must ensure legible PDF copies of their degree certificate and NYSC discharge letter are uploaded.',
+      fullText: 'The human capital and talent screening team is concluding verification of submitted credentials. If your portal displays "Pending Document Verification", please ensure certified copies of your university degree and NYSC certificate are uploaded before October 25, 2026.'
+    },
+    {
+      id: 3,
+      title: `Welcome to ${workspaceName} Applicant & Career Portal`,
+      category: 'General',
+      badge: 'Advisory',
+      pillar: 'striped',
+      date: 'Oct 02, 2026 • 10:00 AM',
+      amountRef: 'Verified',
+      summary: `Track your real-time application processing, review administrative notices, and download assessment invitations.`,
+      fullText: `We welcome all prospective candidates and fellows to the centralized ${workspaceName} application portal. Here, you can monitor your application review pipeline, receive interview invitations, and track payment receipts.`
+    }
+  ] : [
     {
       id: 1,
       title: '2026 CBT Screening Examination Schedule & Venue Allocation',
@@ -71,14 +107,14 @@ export default function CandidateDashboard() {
     },
     {
       id: 3,
-      title: 'General Orientation & Matriculation Preparation Briefing',
+      title: `Welcome to ${workspaceName} Admissions Portal`,
       category: 'General',
       badge: 'Advisory',
       pillar: 'striped',
       date: 'Oct 02, 2026 • 10:00 AM',
       amountRef: '$16.864',
-      summary: 'Welcome to Ephraim High School admissions portal. Monitor your application status, test dates, and fee receipts directly here.',
-      fullText: 'We welcome all prospective students and parents to the centralized Formbox portal. Here, you can easily track your real-time application processing, review administrative notices, download transaction receipts, and verify official examination dates. Should you encounter any questions, reach out via the support email in your portal footer.'
+      summary: 'Welcome to admissions portal. Monitor your application status, test dates, and fee receipts directly here.',
+      fullText: `We welcome all prospective students and parents to the centralized Formbox portal for ${workspaceName}. Here, you can easily track your real-time application processing, review administrative notices, download transaction receipts, and verify official examination dates.`
     }
   ];
 
@@ -107,13 +143,13 @@ export default function CandidateDashboard() {
 
           {/* Centered Navigation Pills */}
           <nav className="candidate-nav-pills">
-            {['Courses', 'Dashboard', 'Schedule', 'Support'].map((tab) => (
+            {[isOrganization ? 'Programmes' : 'Admissions', 'Dashboard', isOrganization ? 'Assessment' : 'Schedule', 'Support'].map((tab) => (
               <button
                 key={tab}
                 className={`candidate-nav-pill ${activeTab === tab ? 'active' : ''}`}
                 onClick={() => {
                   setActiveTab(tab);
-                  if (tab === 'Schedule') {
+                  if (tab === 'Schedule' || tab === 'Assessment') {
                     handleOpenNotice(adminAnnouncements[0]);
                   }
                 }}
@@ -145,12 +181,12 @@ export default function CandidateDashboard() {
             </button>
             <div
               className="candidate-avatar"
-              title="William - Candidate Profile"
-              onClick={() => alert('Logged in as William (APP-2026-0842)')}
+              title={isOrganization ? "Amaka Obi - Applicant Profile (APP-2026-0016)" : "William - Candidate Profile (APP-2026-0842)"}
+              onClick={() => alert(isOrganization ? 'Logged in as Amaka Obi (APP-2026-0016)' : 'Logged in as William (APP-2026-0842)')}
             >
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80"
-                alt="William"
+                alt={isOrganization ? "Amaka Obi" : "William"}
               />
             </div>
           </div>
@@ -158,7 +194,9 @@ export default function CandidateDashboard() {
 
         {/* --- Greeting Row --- */}
         <section className="candidate-header-row">
-          <h1 className="candidate-greeting-title">Good morning, William!</h1>
+          <h1 className="candidate-greeting-title">
+            Good morning, {isOrganization ? 'Amaka' : 'William'}!
+          </h1>
           <button
             className="candidate-btn-black"
             onClick={() => setShowPaymentModal(true)}

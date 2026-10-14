@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Sun, Moon } from 'lucide-react';
 import Header from './Header';
 import PageLoader from './PageLoader';
 import GuidedTour from './GuidedTour';
 import CommandPalette from './CommandPalette';
+import LogoutModal from './LogoutModal';
+import { useWorkspace } from '../context/WorkspaceContext';
 
 export default function Layout() {
+  const { isDark, toggleTheme } = useWorkspace();
   const [initialLoading, setInitialLoading] = useState(true);
   const [navLoading, setNavLoading] = useState(false);
   const [prevPath, setPrevPath] = useState(null);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [isCmdOpen, setIsCmdOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Listen for global logout verification modal trigger
+  useEffect(() => {
+    const handleOpenLogout = () => setIsLogoutModalOpen(true);
+    window.addEventListener('formboxx:open-logout-modal', handleOpenLogout);
+    return () => window.removeEventListener('formboxx:open-logout-modal', handleOpenLogout);
+  }, []);
 
   // Global Cmd+K / Ctrl+K keyboard shortcut + CustomEvent listener
   useEffect(() => {
@@ -135,6 +147,34 @@ export default function Layout() {
       <CommandPalette 
         isOpen={isCmdOpen} 
         onClose={() => setIsCmdOpen(false)} 
+      />
+
+      {/* Floating Theme Switcher Dock in Spacious Bottom-Right Corner */}
+      {!isLoading && (
+        <button
+          type="button"
+          className="floating-theme-dock-btn"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+          title={`Switch to ${isDark ? 'light' : 'dark'} mode (or use ⌘K)`}
+        >
+          <span className="floating-theme-icon-wrap">
+            {isDark ? <Sun size={15} className="text-amber" /> : <Moon size={15} />}
+          </span>
+          <span className="floating-theme-label">
+            {isDark ? 'Dark Mode' : 'Light Mode'}
+          </span>
+        </button>
+      )}
+
+      {/* Verification Question Modal on Logout */}
+      <LogoutModal 
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={() => {
+          setIsLogoutModalOpen(false);
+          navigate('/login');
+        }}
       />
     </div>
   );

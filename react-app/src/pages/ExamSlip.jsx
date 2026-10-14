@@ -1,14 +1,14 @@
-
 import React, { useEffect, useState } from 'react';
 import LucideIcon from '../components/LucideIcon';
+import { useWorkspace } from '../context/WorkspaceContext';
 import gsap from 'gsap';
 
-
 export default function ExamSlip() {
-  const [selectedSlip, setSelectedSlip] = useState(null);  useEffect(() => {
-    
+  const { terms } = useWorkspace();
+  const [selectedSlip, setSelectedSlip] = useState(null);
+
+  useEffect(() => {
     const tl = gsap.timeline();
-    // Default fallback animation
     gsap.set('.header-content', { y: 20, opacity: 0 });
     tl.to('.header-content', { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
   }, []);
@@ -18,8 +18,8 @@ export default function ExamSlip() {
 <div className="header-content">
             <div className="welcome-section">
                 <div className="welcome-text">
-                    <h1>Candidate Exam Slips</h1>
-                    <h2>Generate and print examination slips with allocated venues</h2>
+                    <h1>{terms.examSlips}</h1>
+                    <h2>{terms.examSlipsSubtitle}</h2>
                 </div>
             </div>
         </div>
@@ -33,12 +33,6 @@ export default function ExamSlip() {
                     <input type="text" placeholder="Search by name, ID or venue..." />
                 </div>
                 <div className="filter-group">
-                    {/*  <select className="filter-select">
-                        <option value="all">All Venues</option>
-                        <option value="lagos">Lagos Center</option>
-                        <option value="abuja">Abuja Hub</option>
-                        <option value="ph">Port Harcourt</option>
-                    </select>  */}
                     <select className="filter-select">
                         <option value="all">All Statuses</option>
                         <option value="generated">Generated</option>
@@ -304,14 +298,16 @@ export default function ExamSlip() {
                         <div className="slip-footer">
                             <div style={{ marginBottom: '16px' }}>
                                 <span style={{ color: '#f43f5e', fontWeight: 800, fontSize: '13px', textTransform: 'uppercase' }}>IMPORTANT NOTE: </span>
-                                <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '13px', textTransform: 'uppercase' }}>THIS SLIP ADMITS THE CANDIDATE TO THE EXAMINATION. PLEASE BRING IT TO THE EXAMINATION HALL.</span>
+                                <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '13px', textTransform: 'uppercase' }}>
+                                  THIS SLIP ADMITS THE CANDIDATE TO THE EXAMINATION. PLEASE BRING IT TO THE EXAMINATION HALL.
+                                </span>
                             </div>
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
                                 <ul style={{ margin: 0, paddingLeft: '20px', color: '#475569', fontSize: '12px', lineHeight: 1.6, flex: 1, minWidth: '280px' }}>
-                                    <li>Please arrive at the venue at least <strong>30 minutes</strong> before the scheduled time (09:00 AM).</li>
-                                    <li>You must bring a printed copy of this slip alongside a valid ID card.</li>
-                                    <li>Electronic devices are strictly prohibited in the exam hall.</li>
+                                  <li>Please arrive at the venue at least <strong>30 minutes</strong> before the scheduled time (09:00 AM).</li>
+                                  <li>You must bring a printed copy of this slip alongside a valid ID card.</li>
+                                  <li>Electronic devices are strictly prohibited in the exam hall.</li>
                                 </ul>
 
                                 <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: '20px', borderLeft: '1px dashed #cbd5e1' }}>

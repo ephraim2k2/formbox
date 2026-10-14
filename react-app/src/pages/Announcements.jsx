@@ -2,10 +2,11 @@
 import React, { useEffect } from 'react';
 import LucideIcon from '../components/LucideIcon';
 import gsap from 'gsap';
-
 import { useState } from 'react';
+import { useWorkspace } from '../context/WorkspaceContext';
 
 export default function Announcements() {
+  const { isOrganization, terms } = useWorkspace();
   const [activeTab, setActiveTab] = useState('compose');
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [composeData, setComposeData] = useState({ audience: '', subject: '', message: '' });
@@ -59,10 +60,9 @@ export default function Announcements() {
                             <label htmlFor="audience">Target Audience</label>
                             <select id="audience" className="form-control" value={composeData.audience} onChange={(e) => setComposeData({...composeData, audience: e.target.value})}>
                                 <option value="" disabled>Select who will receive this message...</option>
-                                <option value="all">All Candidates</option>
-                                <option value="admitted">Admitted Candidates</option>
-                                <option value="pending">Pending Reviews</option>
-                                <option value="rejected">Rejected Candidates</option>
+                                {terms.announcementAudience.map(opt => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -89,28 +89,28 @@ export default function Announcements() {
 
             {/*  Tab: Templates  */}
             <div id="tab-templates" className={`tab-pane ${activeTab === 'templates' ? 'active' : ''}`}>
-                <div className="template-grid">
-                    <div className="template-card" onClick={() => openTemplate('Application Status Update', 'Your application has moved to the next stage.')}>
-                        <div className="template-title">Application Status Update</div>
-                        <div className="template-desc">Standard template for notifying users that their application has
-                            moved to the next stage.</div>
+                    <div className="template-grid">
+                        <div className="template-card" onClick={() => openTemplate('Application Status Update', 'Your application has moved to the next stage.')}
+                        >
+                            <div className="template-title">Application Status Update</div>
+                            <div className="template-desc">Standard template for notifying applicants that their submission has moved to the next stage.</div>
+                        </div>
+                        <div className="template-card" onClick={() => openTemplate('Missing Documents', 'Please upload the following missing documents to proceed.')}
+                        >
+                            <div className="template-title">Missing Documents</div>
+                            <div className="template-desc">Template for requesting additional files from pending or incomplete applicants.</div>
+                        </div>
+                        <div className="template-card" onClick={() => openTemplate(isOrganization ? 'Processing Fee Reminder' : 'Payment Reminder', isOrganization ? 'This is a friendly reminder to complete your application processing fee.' : 'This is a friendly reminder to complete your application fee payment.')}
+                        >
+                            <div className="template-title">{isOrganization ? 'Processing Fee Reminder' : 'Payment Reminder'}</div>
+                            <div className="template-desc">{isOrganization ? 'Friendly reminder for applicants who haven\'t completed their processing fee.' : 'Friendly reminder for candidates who haven\'t completed their application fee payment.'}</div>
+                        </div>
+                        <div className="template-card" onClick={() => openTemplate(isOrganization ? 'Welcome / Next Steps' : 'Welcome / Onboarding', isOrganization ? 'Welcome! Your application has been approved. Here are your next steps.' : 'Welcome to the new academic session! Here are your next steps.')}
+                        >
+                            <div className="template-title">{isOrganization ? 'Welcome / Next Steps' : 'Welcome / Onboarding'}</div>
+                            <div className="template-desc">{isOrganization ? 'Welcome message sent to approved applicants with next steps and instructions.' : 'Welcome message sent to newly admitted candidates containing next steps.'}</div>
+                        </div>
                     </div>
-                    <div className="template-card" onClick={() => openTemplate('Missing Documents', 'Please upload the following missing documents to proceed.')}>
-                        <div className="template-title">Missing Documents</div>
-                        <div className="template-desc">Template for requesting additional files from pending or incomplete
-                            applicants.</div>
-                    </div>
-                    <div className="template-card" onClick={() => openTemplate('Payment Reminder', 'This is a friendly reminder to complete your application fee payment.')}>
-                        <div className="template-title">Payment Reminder</div>
-                        <div className="template-desc">Friendly reminder for candidates who haven't completed their
-                            application fee payment.</div>
-                    </div>
-                    <div className="template-card" onClick={() => openTemplate('Welcome / Onboarding', 'Welcome to the new academic session! Here are your next steps.')}>
-                        <div className="template-title">Welcome / Onboarding</div>
-                        <div className="template-desc">Welcome message sent to newly admitted candidates containing next
-                            steps.</div>
-                    </div>
-                </div>
             </div>
 
             {/*  Tab: History  */}
@@ -118,9 +118,9 @@ export default function Announcements() {
                 <div className="history-list">
                     <div className="history-item">
                         <div>
-                            <div className="history-title">Welcome to the Fall 2026 Cohort!</div>
+                            <div className="history-title">{isOrganization ? 'Your Application Has Been Received' : 'Welcome to the Fall 2026 Cohort!'}</div>
                             <div className="history-meta">
-                                <span>Target: Admitted Candidates</span>
+                                <span>Target: {terms.announcementAudience[0].label}</span>
                                 <span>•</span>
                                 <span>Sent: Oct 2, 2026 (10:00 AM)</span>
                             </div>
@@ -142,7 +142,7 @@ export default function Announcements() {
                         <div>
                             <div className="history-title">System Maintenance Notice</div>
                             <div className="history-meta">
-                                <span>Target: All Candidates</span>
+                                <span>Target: {terms.announcementAudience[0].label}</span>
                                 <span>•</span>
                                 <span>Sent: Sep 15, 2026 (9:00 AM)</span>
                             </div>
@@ -168,10 +168,9 @@ export default function Announcements() {
                 <div className="form-group">
                     <label>Target Audience</label>
                     <select id="modalAudience" className="form-control" value={selectedTemplate.audience} onChange={(e) => setSelectedTemplate({...selectedTemplate, audience: e.target.value})}>
-                        <option value="all">All Candidates</option>
-                        <option value="admitted">Admitted Candidates</option>
-                        <option value="pending">Pending Reviews</option>
-                        <option value="rejected">Rejected Candidates</option>
+                        {terms.announcementAudience.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
                     </select>
                 </div>
                 <div className="form-group" style={{marginTop: "16px"}}>

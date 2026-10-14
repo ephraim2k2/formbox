@@ -1,11 +1,11 @@
 
 import React, { useEffect } from 'react';
 import LucideIcon from '../components/LucideIcon';
+import { useWorkspace } from '../context/WorkspaceContext';
 import gsap from 'gsap';
 
-
 export default function Result() {
-
+  const { terms } = useWorkspace();
 
   useEffect(() => {
     
@@ -20,8 +20,8 @@ export default function Result() {
 <div className="header-content">
             <div className="welcome-section">
                 <div className="welcome-text">
-                    <h1>Results & Messaging</h1>
-                    <h2>Manage results and communicate with candidates</h2>
+                    <h1>{terms.results}</h1>
+                    <h2>{terms.resultsSubtitle}</h2>
                 </div>
             </div>
         </div>
@@ -39,8 +39,8 @@ export default function Result() {
                                 <LucideIcon name="upload-cloud" />
                             </div>
                             <div>
-                                <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>Upload Results</h3>
-                                <p style={{"margin":"4px 0 0 0","fontSize":"13px","color":"var(--text-light)"}}>Upload candidate scores or admission status (CSV/Excel)</p>
+                                <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>{terms.uploadCardTitle}</h3>
+                                <p style={{"margin":"4px 0 0 0","fontSize":"13px","color":"var(--text-light)"}}>{terms.uploadCardSubtitle}</p>
                             </div>
                         </div>
                         <button className="btn-download-template" style={{"background":"rgba(16, 185, 129, 0.1)","color":"#10b981","border":"none","padding":"8px 16px","fontSize":"13px","fontWeight":"500","borderRadius":"8px","display":"flex","alignItems":"center","gap":"6px","cursor":"pointer","transition":"0.2s"}}>
@@ -57,7 +57,7 @@ export default function Result() {
                     </div>
                     
                     <button className="btn-primary" style={{"width":"100%","marginTop":"24px","justifyContent":"center"}}>
-                        <LucideIcon name="upload" /> Process Results & Send Auto-Messages
+                        <LucideIcon name="upload" /> {terms.processBtn}
                     </button>
                 </div>
 
@@ -71,7 +71,7 @@ export default function Result() {
                                     <LucideIcon name="check-circle" />
                                 </div>
                                 <div>
-                                    <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>Admitted Candidates</h3>
+                                    <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>{terms.positiveTemplateTitle}</h3>
                                     <p style={{"margin":"4px 0 0 0","fontSize":"13px","color":"var(--text-light)"}}>Sent automatically upon upload</p>
                                 </div>
                             </div>
@@ -81,9 +81,7 @@ export default function Result() {
                         </div>
                         <div className="form-group">
                             <label style={{"display":"block","fontSize":"13px","fontWeight":"500","color":"var(--text-dark)","marginBottom":"8px"}}>Message Content</label>
-                            <textarea className="form-input" rows="6" style={{"width":"100%","padding":"12px","border":"1px solid var(--border-color)","borderRadius":"8px","outline":"none","resize":"vertical","boxSizing":"border-box","lineHeight":"1.5","fontSize":"13px"}} defaultValue={`Congratulations {{name}},
-
-We are pleased to inform you that you have been offered admission for the upcoming academic session. Please log in to your dashboard to view your admission letter and next steps.`}></textarea>
+                            <textarea className="form-input" rows="6" style={{"width":"100%","padding":"12px","border":"1px solid var(--border-color)","borderRadius":"8px","outline":"none","resize":"vertical","boxSizing":"border-box","lineHeight":"1.5","fontSize":"13px"}} defaultValue={terms.positiveMessage}></textarea>
                         </div>
                     </div>
                     
@@ -95,7 +93,7 @@ We are pleased to inform you that you have been offered admission for the upcomi
                                     <LucideIcon name="x-circle" />
                                 </div>
                                 <div>
-                                    <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>Not Admitted Candidates</h3>
+                                    <h3 style={{"margin":"0","fontSize":"16px","color":"var(--text-dark)"}}>{terms.negativeTemplateTitle}</h3>
                                     <p style={{"margin":"4px 0 0 0","fontSize":"13px","color":"var(--text-light)"}}>Sent automatically upon upload</p>
                                 </div>
                             </div>
@@ -105,9 +103,7 @@ We are pleased to inform you that you have been offered admission for the upcomi
                         </div>
                         <div className="form-group">
                             <label style={{"display":"block","fontSize":"13px","fontWeight":"500","color":"var(--text-dark)","marginBottom":"8px"}}>Message Content</label>
-                            <textarea className="form-input" rows="6" style={{"width":"100%","padding":"12px","border":"1px solid var(--border-color)","borderRadius":"8px","outline":"none","resize":"vertical","boxSizing":"border-box","lineHeight":"1.5","fontSize":"13px"}} defaultValue={`Dear {{name}},
-
-Thank you for your application. We regret to inform you that we are unable to offer you admission for the upcoming academic session. We wish you the very best in your future endeavors.`}></textarea>
+                            <textarea className="form-input" rows="6" style={{"width":"100%","padding":"12px","border":"1px solid var(--border-color)","borderRadius":"8px","outline":"none","resize":"vertical","boxSizing":"border-box","lineHeight":"1.5","fontSize":"13px"}} defaultValue={terms.negativeMessage}></textarea>
                         </div>
                     </div>
                 </div>

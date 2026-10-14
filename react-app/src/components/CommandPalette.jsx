@@ -23,14 +23,18 @@ import {
   Building,
   Calendar,
   Layers,
-  HelpCircle
+  HelpCircle,
+  Crown,
+  LogOut
 } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 import './CommandPalette.css';
 
 export default function CommandPalette({ isOpen, onClose }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
+  const { terms, isOrganization, isDark, toggleTheme, requestLogout } = useWorkspace();
   const inputRef = useRef(null);
   const dialogRef = useRef(null);
 
@@ -70,19 +74,29 @@ export default function CommandPalette({ isOpen, onClose }) {
     },
     { 
       id: 'abandoned', 
-      title: 'Abandoned / Incomplete Applications', 
+      title: 'Incomplete Applications', 
       category: 'Navigation', 
       icon: Clock, 
       path: '/abandoned',
-      keywords: ['dropoff', 'drafts', 'pending', 'incomplete', 'unsubmitted', 'follow up']
+      keywords: ['dropoff', 'drafts', 'pending', 'incomplete', 'abandoned', 'unsubmitted', 'follow up']
     },
     { 
       id: 'exam-slip', 
-      title: 'Candidate Exam Slips', 
+      title: terms.nav.slipTitle, 
       category: 'Navigation', 
       icon: Ticket, 
-      path: '/exam-slip',
-      keywords: ['slip', 'hall ticket', 'print', 'examination slip', 'docket', 'seat']
+      path: terms.nav.slipPath,
+      keywords: isOrganization
+        ? ['assessment', 'invitation', 'invite', 'venue', 'schedule', 'issue']
+        : ['slip', 'hall ticket', 'print', 'examination slip', 'docket', 'seat']
+    },
+    { 
+      id: 'payments', 
+      title: 'All Payments', 
+      category: 'Navigation', 
+      icon: CreditCard, 
+      path: '/payments',
+      keywords: ['payments', 'transactions', 'history', 'revenue', 'fees', 'collected', 'finance']
     },
     { 
       id: 'requery', 
@@ -90,7 +104,7 @@ export default function CommandPalette({ isOpen, onClose }) {
       category: 'Navigation', 
       icon: CreditCard, 
       path: '/requery',
-      keywords: ['payment', 'verify', 'transaction', 'remita', 'paystack', 'gateway', 'receipt', 'finance']
+      keywords: ['payment', 'verify', 'transaction', 'remita', 'pixpay', 'gateway', 'receipt', 'finance']
     },
     { 
       id: 'announcements', 
@@ -102,19 +116,31 @@ export default function CommandPalette({ isOpen, onClose }) {
     },
     { 
       id: 'result', 
-      title: 'Candidate Results & Scores', 
+      title: terms.nav.resultTitle, 
       category: 'Navigation', 
       icon: Award, 
-      path: '/result',
-      keywords: ['scores', 'grades', 'cutoff', 'ranking', 'pass', 'merit list']
+      path: terms.nav.resultPath,
+      keywords: isOrganization
+        ? ['outcome', 'results', 'approved', 'declined', 'notify', 'upload']
+        : ['scores', 'grades', 'cutoff', 'ranking', 'pass', 'merit list']
     },
     { 
       id: 'settings', 
-      title: 'General & Examination Settings', 
+      title: isOrganization ? 'General & Assessment Settings' : 'General & Examination Settings', 
       category: 'Navigation', 
       icon: Settings, 
       path: '/settings',
-      keywords: ['settings', 'config', 'venues', 'exam date', 'duration', 'security', 'password', '2fa', 'school profile']
+      keywords: isOrganization 
+        ? ['settings', 'config', 'assessment', 'cut off', 'venues', 'security', 'password', '2fa', 'organization profile']
+        : ['settings', 'config', 'venues', 'exam date', 'duration', 'security', 'password', '2fa', 'school profile']
+    },
+    { 
+      id: 'pricing', 
+      title: 'Plans & Pricing (Upgrade Subscription)', 
+      category: 'Navigation', 
+      icon: Crown, 
+      path: '/pricing',
+      keywords: ['pricing', 'plans', 'upgrade', 'billing', 'subscription', 'pixpay', 'tier', 'invoices', 'receipts']
     },
 
     // Quick Actions
@@ -138,91 +164,157 @@ export default function CommandPalette({ isOpen, onClose }) {
     },
     { 
       id: 'theme', 
-      title: 'Toggle Dark / Light Theme', 
+      title: isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme', 
       category: 'Actions', 
-      icon: Moon, 
-      keywords: ['dark mode', 'light mode', 'theme', 'color', 'night'],
+      icon: isDark ? Sun : Moon, 
+      keywords: ['dark mode', 'light mode', 'theme', 'color', 'night', 'appearance'],
       action: () => {
-        const isDark = document.body.classList.contains('dark-theme');
-        if (isDark) {
-          document.body.classList.remove('dark-theme');
-          document.documentElement.classList.remove('dark-theme');
-          localStorage.setItem('darkMode', 'disabled');
-        } else {
-          document.body.classList.add('dark-theme');
-          document.documentElement.classList.add('dark-theme');
-          localStorage.setItem('darkMode', 'enabled');
-        }
+        toggleTheme();
+      } 
+    },
+    { 
+      id: 'logout', 
+      title: 'Log Out of Account', 
+      category: 'Actions', 
+      icon: LogOut, 
+      keywords: ['logout', 'sign out', 'leave', 'exit', 'disconnect'],
+      action: () => {
+        requestLogout();
       } 
     },
 
-    // Candidates Directory Search
-    { 
-      id: 'cand-1', 
-      title: 'David Olamide (Admission 2026 - Lagos State)', 
-      category: 'Candidates', 
-      icon: User, 
-      path: '/completed',
-      keywords: ['david', 'olamide', 'lagos', 'admission', 'fb-2026-0891']
-    },
-    { 
-      id: 'cand-2', 
-      title: 'Sarah Johnson (Staff Recruitment - Abuja)', 
-      category: 'Candidates', 
-      icon: User, 
-      path: '/completed',
-      keywords: ['sarah', 'johnson', 'abuja', 'recruitment', 'staff', 'fb-2026-0412']
-    },
-    { 
-      id: 'cand-3', 
-      title: 'Emeka Uchenna (Transfer Application - Rivers)', 
-      category: 'Candidates', 
-      icon: User, 
-      path: '/completed',
-      keywords: ['emeka', 'uchenna', 'transfer', 'rivers', 'fb-2026-1104']
-    },
-    { 
-      id: 'cand-4', 
-      title: 'Favour Nwosu (Hostel Accommodation - Enugu)', 
-      category: 'Candidates', 
-      icon: User, 
-      path: '/abandoned',
-      keywords: ['favour', 'nwosu', 'hostel', 'accommodation', 'enugu', 'incomplete', 'fb-2026-0922']
-    },
-    { 
-      id: 'cand-5', 
-      title: 'Chioma Adeleke (Merit Scholarship - Oyo)', 
-      category: 'Candidates', 
-      icon: User, 
-      path: '/completed',
-      keywords: ['chioma', 'adeleke', 'scholarship', 'merit', 'oyo', 'fb-2026-1402']
-    },
-
-    // Venues & Examination Configurations
-    {
-      id: 'venue-1',
-      title: 'Lagos Tech Hub (250 Seats, Active Venue)',
-      category: 'Venues',
-      icon: Building,
-      path: '/settings',
-      keywords: ['venue', 'lagos tech hub', 'seats', 'capacity', 'examination center', 'yaba']
-    },
-    {
-      id: 'venue-2',
-      title: 'Abuja Convention Center (500 Seats, Active Venue)',
-      category: 'Venues',
-      icon: Building,
-      path: '/settings',
-      keywords: ['venue', 'abuja', 'convention center', 'garki', 'seats', 'capacity']
-    },
-    {
-      id: 'setting-exam-setup',
-      title: 'Examination Schedule & Pass Score Setup',
-      category: 'Settings',
-      icon: Calendar,
-      path: '/settings',
-      keywords: ['exam date', 'duration', 'pass score', 'cbt', 'mode', 'instructions']
-    },
+    // Candidates / Applicants Directory Search
+    ...(isOrganization ? [
+      { 
+        id: 'cand-1', 
+        title: 'Amaka Obi (Graduate Trainee 2026 - Lagos)', 
+        category: 'Applicants', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['amaka', 'obi', 'lagos', 'graduate', 'trainee', 'app-2026-0016']
+      },
+      { 
+        id: 'cand-2', 
+        title: 'James Haruna (Experienced Hire – Finance - Abuja)', 
+        category: 'Applicants', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['james', 'haruna', 'abuja', 'finance', 'hire', 'app-2026-7392']
+      },
+      { 
+        id: 'cand-3', 
+        title: 'Chidinma Eze (Tech Fellowship Cohort 4 - Rivers)', 
+        category: 'Applicants', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['chidinma', 'eze', 'tech', 'fellowship', 'rivers', 'app-2026-5541']
+      },
+      { 
+        id: 'cand-4', 
+        title: 'Tunde Bakare (Community Grant - Ogun)', 
+        category: 'Applicants', 
+        icon: User, 
+        path: '/abandoned',
+        keywords: ['tunde', 'bakare', 'grant', 'community', 'incomplete', 'app-2026-0922']
+      },
+      { 
+        id: 'cand-5', 
+        title: 'Ngozi Adeyemi (Summer Internship - Lagos)', 
+        category: 'Applicants', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['ngozi', 'adeyemi', 'internship', 'summer', 'app-2026-1402']
+      },
+      {
+        id: 'venue-1',
+        title: 'Lagos Assessment Centre (200 Slots, Active Hub)',
+        category: 'Assessment Hubs',
+        icon: Building,
+        path: '/settings',
+        keywords: ['venue', 'lagos assessment centre', 'slots', 'capacity', 'hub', 'lekki']
+      },
+      {
+        id: 'venue-2',
+        title: 'Abuja Talent Hub (350 Slots, Active Hub)',
+        category: 'Assessment Hubs',
+        icon: Building,
+        path: '/settings',
+        keywords: ['venue', 'abuja talent hub', 'cbd', 'slots', 'capacity', 'assessment']
+      },
+      {
+        id: 'setting-exam-setup',
+        title: 'Assessment Schedule & Cut-Off Score Setup',
+        category: 'Settings',
+        icon: Calendar,
+        path: '/settings',
+        keywords: ['assessment date', 'duration', 'cut off', 'proctored', 'mode', 'instructions']
+      },
+    ] : [
+      { 
+        id: 'cand-1', 
+        title: 'David Olamide (Admission 2026 - Lagos State)', 
+        category: 'Candidates', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['david', 'olamide', 'lagos', 'admission', 'fb-2026-0891']
+      },
+      { 
+        id: 'cand-2', 
+        title: 'Sarah Johnson (Staff Recruitment - Abuja)', 
+        category: 'Candidates', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['sarah', 'johnson', 'abuja', 'recruitment', 'staff', 'fb-2026-0412']
+      },
+      { 
+        id: 'cand-3', 
+        title: 'Emeka Uchenna (Transfer Application - Rivers)', 
+        category: 'Candidates', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['emeka', 'uchenna', 'transfer', 'rivers', 'fb-2026-1104']
+      },
+      { 
+        id: 'cand-4', 
+        title: 'Favour Nwosu (Hostel Accommodation - Enugu)', 
+        category: 'Candidates', 
+        icon: User, 
+        path: '/abandoned',
+        keywords: ['favour', 'nwosu', 'hostel', 'accommodation', 'enugu', 'incomplete', 'fb-2026-0922']
+      },
+      { 
+        id: 'cand-5', 
+        title: 'Chioma Adeleke (Merit Scholarship - Oyo)', 
+        category: 'Candidates', 
+        icon: User, 
+        path: '/completed',
+        keywords: ['chioma', 'adeleke', 'scholarship', 'merit', 'oyo', 'fb-2026-1402']
+      },
+      {
+        id: 'venue-1',
+        title: 'Lagos Tech Hub (250 Seats, Active Venue)',
+        category: 'Venues',
+        icon: Building,
+        path: '/settings',
+        keywords: ['venue', 'lagos tech hub', 'seats', 'capacity', 'examination center', 'yaba']
+      },
+      {
+        id: 'venue-2',
+        title: 'Abuja Convention Center (500 Seats, Active Venue)',
+        category: 'Venues',
+        icon: Building,
+        path: '/settings',
+        keywords: ['venue', 'abuja', 'convention center', 'garki', 'seats', 'capacity']
+      },
+      {
+        id: 'setting-exam-setup',
+        title: 'Examination Schedule & Pass Score Setup',
+        category: 'Settings',
+        icon: Calendar,
+        path: '/settings',
+        keywords: ['exam date', 'duration', 'pass score', 'cbt', 'mode', 'instructions']
+      },
+    ]),
     {
       id: 'setting-security',
       title: 'Security & Two-Factor Authentication (2FA)',

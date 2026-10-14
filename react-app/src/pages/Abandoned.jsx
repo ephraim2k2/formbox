@@ -20,7 +20,7 @@ export default function Abandoned() {
 <header className="header-content" style={{ opacity: 1, transform: 'none' }}>
         <div>
           <p className="welcome-text">Follow up on applications that were not completed</p>
-          <h1 className="page-title">Abandoned Applications ⚠️</h1>
+          <h1 className="page-title">Incomplete Applications ⚠️</h1>
         </div>
       </header>
 
@@ -37,7 +37,7 @@ export default function Abandoned() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <select className="form-input" style={{ width: '220px' }}>
-            <option>All Abandonment Stages</option>
+            <option>All Incomplete Stages</option>
             <option>Stopped at Payment</option>
             <option>Stopped at Documents</option>
             <option>Stopped at Personal Info</option>

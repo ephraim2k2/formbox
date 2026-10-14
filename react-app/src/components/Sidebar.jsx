@@ -7,10 +7,19 @@ import {
   CreditCard, 
   Bell, 
   Settings, 
-  LogOut 
+  LogOut,
+  Award,
+  Printer,
+  RefreshCcw,
+  Wallet,
+  Crown
 } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 
 export default function Sidebar() {
+  const { terms, workspaceName, isOrganization, requestLogout } = useWorkspace();
+  const nav = terms.nav;
+
   return (
     <aside className="sidebar">
       <div className="logo">
@@ -24,6 +33,10 @@ export default function Sidebar() {
         <span>form<span style={{ color: '#0052cc' }}>box</span></span>
       </div>
 
+      <div style={{ padding: '0 16px 12px 16px', fontSize: '11px', color: 'var(--text-light)', fontWeight: 600 }}>
+        {isOrganization ? '🏢 ' : '🏫 '} {workspaceName}
+      </div>
+
       <nav className="nav-menu">
         <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <LayoutDashboard style={{ width: '20px', height: '20px' }} /> Dashboard
@@ -35,28 +48,40 @@ export default function Sidebar() {
           <LayoutTemplate style={{ width: '20px', height: '20px' }} /> Templates
         </NavLink>
         
-        <div className="nav-group">Applications</div>
+        <div className="nav-group">{nav.group}</div>
         <NavLink to="/completed" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></div>
-            Completed
+            {nav.completed}
           </div>
         </NavLink>
         <NavLink to="/abandoned" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }}></div>
-            Abandoned
+            {nav.incomplete}
           </div>
         </NavLink>
-
-        <div className="nav-group">Payments</div>
-        <NavLink to="/transactions" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <CreditCard style={{ width: '20px', height: '20px' }} /> Transactions
+        <NavLink to={nav.slipPath} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Printer style={{ width: '20px', height: '20px' }} /> {nav.slipTitle}
+        </NavLink>
+        <NavLink to={nav.resultPath} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Award style={{ width: '20px', height: '20px' }} /> {nav.resultTitle}
         </NavLink>
 
-        <div className="nav-group">System</div>
+        <div className="nav-group">{nav.payments}</div>
+        <NavLink to="/payments" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Wallet style={{ width: '20px', height: '20px' }} /> {nav.allPayments}
+        </NavLink>
+        <NavLink to="/requery" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <RefreshCcw style={{ width: '20px', height: '20px' }} /> {nav.requery}
+        </NavLink>
+
+        <div className="nav-group">System & Billing</div>
         <NavLink to="/announcements" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <Bell style={{ width: '20px', height: '20px' }} /> Announcements
+          <Bell style={{ width: '20px', height: '20px' }} /> {nav.announcements}
+        </NavLink>
+        <NavLink to="/pricing" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Crown style={{ width: '20px', height: '20px', color: '#f59e0b' }} /> Pricing
         </NavLink>
         <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <Settings style={{ width: '20px', height: '20px' }} /> Settings
@@ -64,9 +89,13 @@ export default function Sidebar() {
       </nav>
 
       <div className="nav-menu" style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid var(--border-color)' }}>
-        <a href="#" className="nav-item" style={{ color: '#ef4444' }}>
+        <div 
+          className="nav-item" 
+          style={{ color: '#ef4444', cursor: 'pointer' }}
+          onClick={() => requestLogout()}
+        >
           <LogOut style={{ width: '20px', height: '20px' }} /> Logout
-        </a>
+        </div>
       </div>
     </aside>
   );

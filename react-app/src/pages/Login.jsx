@@ -1,62 +1,74 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   Eye, 
   EyeOff, 
   ArrowRight, 
   Sparkles, 
   ShieldCheck, 
-  CheckCircle2, 
   Zap, 
   TrendingUp, 
   Sun, 
   Moon,
   FileCheck2,
-  Users,
   ChevronDown,
-  GraduationCap
+  GraduationCap,
+  Building2,
+  HeartHandshake,
+  Landmark
 } from 'lucide-react';
+import { useWorkspace, WORKSPACE_TERMS } from '../context/WorkspaceContext';
 import './Login.css';
+
+const SCHOOLS = [
+  'Adventist Technical Secondary School',
+  'Christ the King College, Gwagwalada',
+  'Daughters of Divine Love Juniorate, Abakpa-Nike, Enugu',
+  'Holy Rosary College, Enugu',
+  'Holy Rosary Girls\' College, Gwagwalada',
+  'Louisville Girls Secondary School',
+  'Marist Schools',
+  'Roseville Secondary School, Enugu',
+];
+
+const ORGS = [
+  'Access Bank Plc',
+  'Dangote Industries Ltd',
+  'Flutterwave Inc.',
+  'GTBank Foundation',
+  'MTN Nigeria',
+  'Nestlé Nigeria Plc',
+  'Stanbic IBTC Holdings',
+  'TechCabal Africa',
+];
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('admin@formbox.com');
-  const [school, setSchool] = useState('');
-  const [password, setPassword] = useState('••••••••••••');
+  const { setWorkspace, isDark, toggleTheme } = useWorkspace();
 
-  const schoolsList = [
-    'Adventist Technical Secondary School',
-    'Christ the King College, Gwagwalada',
-    'Daughters of Divine Love Juniorate, Abakpa-Nike, Enugu',
-    'Holy Rosary College, Enugu',
-    'Holy Rosary Girls\' College, Gwagwalada',
-    'Louisville Girls Secondary School',
-    'Marist Schools',
-    'Roseville Secondary School, Enugu'
-  ];
+  // Role toggle: 'school' | 'organization'
+  const [role, setRole] = useState('school');
+
+  const [entity, setEntity] = useState('');
+  const [email, setEmail] = useState('admin@formbox.com');
+  const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDark, setIsDark] = useState(() => localStorage.getItem('darkMode') === 'enabled');
 
-  const toggleTheme = () => {
-    if (isDark) {
-      document.body.classList.remove('dark-theme');
-      document.documentElement.classList.remove('dark-theme');
-      localStorage.setItem('darkMode', 'disabled');
-      setIsDark(false);
-    } else {
-      document.body.classList.add('dark-theme');
-      document.documentElement.classList.add('dark-theme');
-      localStorage.setItem('darkMode', 'enabled');
-      setIsDark(true);
-    }
+  const terms = WORKSPACE_TERMS[role];
+  const entityList = role === 'school' ? SCHOOLS : ORGS;
+
+  const handleRoleSwitch = (newRole) => {
+    setRole(newRole);
+    setEntity('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setTimeout(() => {
+      setWorkspace(role, entity);
       setIsLoading(false);
       navigate('/');
     }, 700);
@@ -68,40 +80,41 @@ export default function Login() {
       <div className="ambient-orb orb-1" />
       <div className="ambient-orb orb-2" />
 
-      {/* Top Header Floating Controls */}
-      <div className="login-top-bar">
-        <div className="login-brand" onClick={() => navigate('/')}>
-          <div className="brand-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="login-logo-svg">
-              <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
-              <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
-              <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
-            </svg>
-          </div>
-          <div className="login-brand-text">
-            <span className="brand-blue">form</span><span className="brand-gold">box</span>
-          </div>
-          {/* <span className="brand-badge">v2.4 Enterprise</span> */}
-        </div>
-
-        <div className="top-bar-actions">
-          <button 
-            type="button" 
-            className="theme-switch-btn" 
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            title="Toggle theme"
-          >
-            {isDark ? <Sun size={17} className="text-amber" /> : <Moon size={17} />}
-          </button>
-        </div>
-      </div>
+      {/* Floating Theme Switcher Dock in Spacious Bottom-Left Corner */}
+      <button 
+        type="button" 
+        className="login-floating-theme-switch" 
+        onClick={toggleTheme}
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+        title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        <span className="floating-switch-icon-circle">
+          {isDark ? <Sun size={15} className="text-amber" /> : <Moon size={15} />}
+        </span>
+        <span className="floating-switch-label">
+          {isDark ? 'Dark Mode' : 'Light Mode'}
+        </span>
+      </button>
 
       {/* Main Viewport Stage */}
       <div className="login-stage">
         {/* Left Column: Premium Login Form */}
         <div className="login-form-pane">
           <div className="form-content-wrap">
+            {/* Logo Aligned with Form Fields */}
+            <div className="login-brand form-brand" onClick={() => navigate('/')}>
+              <div className="brand-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="login-logo-svg">
+                  <polygon points="12 4 3 9 12 14 21 9 12 4" stroke="#0052cc" fill="white"></polygon>
+                  <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
+                  <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
+                </svg>
+              </div>
+              <div className="login-brand-text">
+                <span className="brand-blue">form</span><span className="brand-gold">box</span>
+              </div>
+            </div>
+
             {/* Header Greeting */}
             <div className="login-header">
               <div className="pill-badge">
@@ -114,41 +127,50 @@ export default function Login() {
               </p>
             </div>
 
-            {/* Social Auth Providers */}
-            <div className="social-auth-group">
-              <button type="button" className="social-auth-btn" onClick={() => navigate('/')}>
-                <svg className="social-icon" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
-                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                </svg>
-                <span>Continue with Google</span>
+            {/* ── Workspace Role Toggle ─────────────────────────────── */}
+            <div className="role-toggle-group" aria-label="Select workspace type">
+              <button
+                type="button"
+                id="role-school"
+                className={`role-toggle-btn ${role === 'school' ? 'active' : ''}`}
+                onClick={() => handleRoleSwitch('school')}
+              >
+                <GraduationCap size={16} />
+                <span>School</span>
+              </button>
+              <button
+                type="button"
+                id="role-organization"
+                className={`role-toggle-btn ${role === 'organization' ? 'active' : ''}`}
+                onClick={() => handleRoleSwitch('organization')}
+              >
+                <Building2 size={16} />
+                <span>Organization</span>
               </button>
             </div>
 
-            {/* Subtle Divider */}
-            <div className="login-divider">
-              <span className="divider-line" />
-              <span className="divider-text">Or sign in with email</span>
-              <span className="divider-line" />
-            </div>
 
             {/* Main Interactive Form */}
             <form className="login-form" onSubmit={handleSubmit}>
+              {/* Dynamic entity selector */}
               <div className="form-field-group">
-                <label htmlFor="login-school" className="field-label">School</label>
+                <label htmlFor="login-entity" className="field-label">
+                  {terms.workspaceLabel}
+                </label>
                 <div className="select-with-icon">
-                  <GraduationCap size={18} className="field-prefix-icon" />
+                  {role === 'school'
+                    ? <GraduationCap size={18} className="field-prefix-icon" />
+                    : <Building2 size={18} className="field-prefix-icon" />
+                  }
                   <select
-                    id="login-school"
+                    id="login-entity"
                     required
                     className="styled-input styled-select"
-                    value={school}
-                    onChange={(e) => setSchool(e.target.value)}
+                    value={entity}
+                    onChange={(e) => setEntity(e.target.value)}
                   >
-                    <option value="" disabled>-- Select School --</option>
-                    {schoolsList.map((item, idx) => (
+                    <option value="" disabled>{terms.entityPlaceholder}</option>
+                    {entityList.map((item, idx) => (
                       <option key={idx} value={item}>{item}</option>
                     ))}
                   </select>
@@ -157,14 +179,14 @@ export default function Login() {
               </div>
 
               <div className="form-field-group">
-                <label htmlFor="login-email" className="field-label">School Email</label>
+                <label htmlFor="login-email" className="field-label">{terms.emailLabel}</label>
                 <div className="input-with-icon">
                   <input
                     id="login-email"
                     type="email"
                     required
                     className="styled-input"
-                    placeholder="admin@formboxx.edu"
+                    placeholder={terms.emailPlaceholder}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -229,7 +251,7 @@ export default function Login() {
                   </span>
                 ) : (
                   <>
-                    <span>Sign In to Dashboard</span>
+                    <span>Sign In to {terms.workspaceLabel} Dashboard</span>
                     <ArrowRight size={17} />
                   </>
                 )}
@@ -285,8 +307,8 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* Floating Live Metric Card 2 (Bottom Right) */}
-                <div className="floating-metric-card bottom-right-card">
+                {/* Floating Live Metric Card 2 (Top Right) */}
+                <div className="floating-metric-card top-right-card">
                   <div className="metric-avatar-stack">
                     <div className="mini-avatar" style={{ background: '#3b82f6' }}>JD</div>
                     <div className="mini-avatar" style={{ background: '#10b981' }}>SA</div>
@@ -300,24 +322,40 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* Architectural Portal Top Caption */}
+                {/* Architectural Portal Bottom Caption */}
                 <div className="portal-hero-caption">
                   <div className="hero-caption-badge">
-                    <FileCheck2 size={13} />
-                    <span>Universal Admissions Gateway</span>
+                    <Sparkles size={13} />
+                    <span>One Platform. Every Workflow.</span>
                   </div>
                   <h2 className="hero-caption-title">
-                    Build any application form. <br />
-                    Collect verified submissions instantly.
+                    Create forms. Automate workflows. <br />
+                    Get things done.
                   </h2>
                   <p className="hero-caption-desc">
-                    Accelerating university enrollments, corporate screenings, and scholarship reviews with automated workflows.
+                    Collect verified submissions, manage applications, and streamline processes from one secure platform.
                   </p>
+
+                  {/* Verticals / Sectors */}
+                  <div className="hero-caption-sectors">
+                    <span className="sector-tag">
+                      <GraduationCap size={13} /> Education
+                    </span>
+                    <span className="sector-tag">
+                      <Building2 size={13} /> Corporate
+                    </span>
+                    <span className="sector-tag">
+                      <HeartHandshake size={13} /> Nonprofits
+                    </span>
+                    <span className="sector-tag">
+                      <Landmark size={13} /> Public Sector
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+    </div>
   );
 }

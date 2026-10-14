@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, RefreshCcw, Moon, Sun, Bell, Search, Menu, X, FileText, CheckCircle2, AlertCircle, Printer, Volume2, Award, LayoutDashboard } from 'lucide-react';
+import { ChevronDown, RefreshCcw, Moon, Sun, Bell, Search, Menu, X, FileText, CheckCircle2, AlertCircle, Printer, Volume2, Award, LayoutDashboard, Wallet, Crown } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
 import ProfileDropdown from './ProfileDropdown';
+import { useWorkspace } from '../context/WorkspaceContext';
 
 export default function Header({ onOpenCommandPalette }) {
-  const [isDark, setIsDark] = useState(false);
+  const { terms, workspaceName, isOrganization, isDark, toggleTheme } = useWorkspace();
+  const nav = terms.nav;
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -13,15 +15,6 @@ export default function Header({ onOpenCommandPalette }) {
   const [mobilePaymentsOpen, setMobilePaymentsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('darkMode');
-    if (savedTheme === 'enabled') {
-      setIsDark(true);
-      document.body.classList.add('dark-theme');
-      document.documentElement.classList.add('dark-theme');
-    }
-  }, []);
 
   // Close menus & popovers when location changes
   useEffect(() => {
@@ -46,20 +39,6 @@ export default function Header({ onOpenCommandPalette }) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const toggleTheme = () => {
-    if (isDark) {
-      document.body.classList.remove('dark-theme');
-      document.documentElement.classList.remove('dark-theme');
-      localStorage.setItem('darkMode', 'disabled');
-      setIsDark(false);
-    } else {
-      document.body.classList.add('dark-theme');
-      document.documentElement.classList.add('dark-theme');
-      localStorage.setItem('darkMode', 'enabled');
-      setIsDark(true);
-    }
-  };
-
   const toggleDropdown = (e, name) => {
     e.preventDefault();
     e.stopPropagation();
@@ -80,8 +59,28 @@ export default function Header({ onOpenCommandPalette }) {
             <polyline points="3 13 12 18 21 13" stroke="#ffcc00"></polyline>
             <polyline points="3 17 12 22 21 17" stroke="#0052cc"></polyline>
           </svg>
-          <div style={{ display: 'flex' }}>
-            <span style={{ color: '#0052cc' }}>form</span><span style={{ color: '#ffcc00' }}>box</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex' }}>
+              <span style={{ color: '#0052cc' }}>form</span><span style={{ color: '#ffcc00' }}>box</span>
+            </div>
+            <div className="active-workspace-badge" style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '3px 10px',
+              borderRadius: '20px',
+              background: isOrganization ? 'rgba(124, 58, 237, 0.1)' : 'rgba(0, 82, 204, 0.08)',
+              color: isOrganization ? '#7c3aed' : '#0052cc',
+              fontSize: '11px',
+              fontWeight: 600,
+              maxWidth: '180px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }} title={`Logged in as ${workspaceName} (${terms.workspaceLabel})`}>
+              <span>{isOrganization ? '🏢' : '🏫'}</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{workspaceName}</span>
+            </div>
           </div>
         </div>
 
@@ -92,11 +91,11 @@ export default function Header({ onOpenCommandPalette }) {
           
           <div id="tour-nav-applications" className={`nav-dropdown ${activeDropdown === 'applications' ? 'open' : ''}`}>
             <div 
-              className="nav-link" 
+              className={`nav-link ${['/completed', '/abandoned', nav.slipPath, nav.resultPath].includes(location.pathname) ? 'active' : ''}`} 
               onClick={(e) => toggleDropdown(e, 'applications')}
               style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
             >
-              Applications <ChevronDown size={14} style={{ transform: activeDropdown === 'applications' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              {nav.group} <ChevronDown size={14} style={{ transform: activeDropdown === 'applications' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </div>
             <div className="nav-dropdown-content">
               <NavLink to="/completed" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
@@ -104,8 +103,8 @@ export default function Header({ onOpenCommandPalette }) {
                   <CheckCircle2 size={18} />
                 </div>
                 <div className="mega-text-box">
-                  <div className="mega-title">Completed Applications</div>
-                  <div className="mega-subtitle">Successfully submitted forms</div>
+                  <div className="mega-title">{nav.completed}</div>
+                  <div className="mega-subtitle">{nav.completedSub}</div>
                 </div>
               </NavLink>
               <NavLink to="/abandoned" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
@@ -113,17 +112,26 @@ export default function Header({ onOpenCommandPalette }) {
                   <AlertCircle size={18} />
                 </div>
                 <div className="mega-text-box">
-                  <div className="mega-title">Abandoned Applications</div>
-                  <div className="mega-subtitle">Users who dropped off</div>
+                  <div className="mega-title">{nav.incomplete}</div>
+                  <div className="mega-subtitle">{nav.incompleteSub}</div>
                 </div>
               </NavLink>
-              <NavLink to="/exam-slip" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+              <NavLink to={nav.slipPath} className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
                 <div className="mega-icon-box" style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1' }}>
                   <Printer size={18} />
                 </div>
                 <div className="mega-text-box">
-                  <div className="mega-title">Exam Slips</div>
-                  <div className="mega-subtitle">Generate & print exam slips</div>
+                  <div className="mega-title">{nav.slipTitle}</div>
+                  <div className="mega-subtitle">{nav.slipSub}</div>
+                </div>
+              </NavLink>
+              <NavLink to={nav.resultPath} className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
+                  <Award size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">{nav.resultTitle}</div>
+                  <div className="mega-subtitle">{nav.resultSub}</div>
                 </div>
               </NavLink>
             </div>
@@ -131,26 +139,35 @@ export default function Header({ onOpenCommandPalette }) {
 
           <div id="tour-nav-payments" className={`nav-dropdown ${activeDropdown === 'payments' ? 'open' : ''}`}>
             <div 
-              className="nav-link" 
+              className={`nav-link ${['/payments', '/requery'].includes(location.pathname) ? 'active' : ''}`} 
               onClick={(e) => toggleDropdown(e, 'payments')}
               style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
             >
-              Payments <ChevronDown size={14} style={{ transform: activeDropdown === 'payments' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              {nav.payments} <ChevronDown size={14} style={{ transform: activeDropdown === 'payments' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </div>
             <div className="nav-dropdown-content">
+              <NavLink to="/payments" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
+                <div className="mega-icon-box" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
+                  <Wallet size={18} />
+                </div>
+                <div className="mega-text-box">
+                  <div className="mega-title">{nav.allPayments}</div>
+                  <div className="mega-subtitle">{nav.allPaymentsSub}</div>
+                </div>
+              </NavLink>
               <NavLink to="/requery" className="mega-menu-item" onClick={() => setActiveDropdown(null)}>
                 <div className="mega-icon-box" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
                   <RefreshCcw size={18} />
                 </div>
                 <div className="mega-text-box">
-                  <div className="mega-title">Requery Payment</div>
-                  <div className="mega-subtitle">Verify payment status</div>
+                  <div className="mega-title">{nav.requery}</div>
+                  <div className="mega-subtitle">{nav.requerySub}</div>
                 </div>
               </NavLink>
             </div>
           </div>
-          <NavLink id="tour-nav-announcements" to="/announcements" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Announcement</NavLink>
-          <NavLink id="tour-nav-results" to="/result" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', color: 'inherit' }}>Results</NavLink>
+          <NavLink id="tour-nav-announcements" to="/announcements" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>{nav.announcements}</NavLink>
+          <NavLink id="tour-nav-pricing" to="/pricing" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>Pricing</NavLink>
         </div>
 
         {/* User Actions & Mobile Hamburger */}
@@ -174,10 +191,6 @@ export default function Header({ onOpenCommandPalette }) {
             <Search size={16} />
             <span className="cmd-text-label" style={{ fontWeight: 500 }}>Search...</span>
             <kbd className="cmd-trigger-kbd">⌘K</kbd>
-          </button>
-
-          <button id="tour-theme-toggle" className="icon-btn theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode">
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
           {/* Notification Bell Button */}
@@ -218,10 +231,16 @@ export default function Header({ onOpenCommandPalette }) {
               setIsProfileOpen(!isProfileOpen);
               setIsNotifOpen(false);
             }}
-            style={{ cursor: 'pointer', position: 'relative' }}
-            title="User Account Menu"
+            style={{ 
+              cursor: 'pointer', 
+              position: 'relative',
+              background: isOrganization ? '#7c3aed' : '#0052cc',
+              color: '#fff',
+              fontWeight: 600
+            }}
+            title={`Account: ${workspaceName} (${terms.workspaceLabel})`}
           >
-            <span>AD</span>
+            <span>{terms.adminProfile.initials}</span>
           </div>
 
           {/* Profile Dropdown Component */}
@@ -273,7 +292,7 @@ export default function Header({ onOpenCommandPalette }) {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <CheckCircle2 size={18} color="#10b981" />
-                  <span style={{ fontWeight: 600 }}>Applications</span>
+                  <span style={{ fontWeight: 600 }}>{nav.group}</span>
                 </div>
                 <ChevronDown size={16} style={{ transform: mobileApplicationsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
               </div>
@@ -285,21 +304,28 @@ export default function Header({ onOpenCommandPalette }) {
                     className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span>Completed Applications</span>
+                    <span>{nav.completed}</span>
                   </NavLink>
                   <NavLink 
                     to="/abandoned" 
                     className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span>Abandoned Applications</span>
+                    <span>{nav.incomplete}</span>
                   </NavLink>
-                  <NavLink 
-                    to="/exam-slip" 
+                   <NavLink 
+                    to={nav.slipPath} 
                     className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span>Exam Slips</span>
+                    <span>{nav.slipTitle}</span>
+                  </NavLink>
+                  <NavLink 
+                    to={nav.resultPath} 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>{nav.resultTitle}</span>
                   </NavLink>
                 </div>
               )}
@@ -313,7 +339,7 @@ export default function Header({ onOpenCommandPalette }) {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <RefreshCcw size={18} color="#3b82f6" />
-                  <span style={{ fontWeight: 600 }}>Payments</span>
+                  <span style={{ fontWeight: 600 }}>{nav.payments}</span>
                 </div>
                 <ChevronDown size={16} style={{ transform: mobilePaymentsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
               </div>
@@ -321,11 +347,18 @@ export default function Header({ onOpenCommandPalette }) {
               {mobilePaymentsOpen && (
                 <div className="mobile-nav-sublist">
                   <NavLink 
+                    to="/payments" 
+                    className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>{nav.allPayments}</span>
+                  </NavLink>
+                  <NavLink 
                     to="/requery" 
                     className={({ isActive }) => `mobile-subnav-item ${isActive ? 'active' : ''}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span>Requery Payment</span>
+                    <span>{nav.requery}</span>
                   </NavLink>
                 </div>
               )}
@@ -341,13 +374,43 @@ export default function Header({ onOpenCommandPalette }) {
             </NavLink>
 
             <NavLink 
-              to="/result" 
+              to="/pricing" 
               className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Award size={18} />
-              <span>Results & Messaging</span>
+              <Crown size={18} style={{ color: '#f59e0b' }} />
+              <span>Pricing</span>
             </NavLink>
+
+            {/* Mobile Drawer Theme Toggle */}
+            <div 
+              className="mobile-nav-item mobile-theme-item"
+              onClick={() => toggleTheme()}
+              style={{ 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                marginTop: '6px',
+                borderTop: '1px solid var(--border-color, rgba(0,0,0,0.06))',
+                paddingTop: '12px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {isDark ? <Sun size={18} className="text-amber" /> : <Moon size={18} />}
+                <span>{isDark ? 'Light Theme' : 'Dark Theme'}</span>
+              </div>
+              <span style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                padding: '2px 8px',
+                borderRadius: '999px',
+                background: isDark ? 'rgba(245, 158, 11, 0.15)' : 'rgba(0, 82, 204, 0.1)',
+                color: isDark ? '#f59e0b' : '#0052cc'
+              }}>
+                {isDark ? 'Dark Active' : 'Light Active'}
+              </span>
+            </div>
           </div>
         </div>
       )}

@@ -16,10 +16,12 @@ import {
   Mail,
   Phone
 } from 'lucide-react';
+import { useWorkspace } from '../context/WorkspaceContext';
 import gsap from 'gsap';
 import './IncompleteApplications.css';
 
 export default function IncompleteApplications() {
+  const { isOrganization, terms } = useWorkspace();
   const [search, setSearch] = useState('');
   const [stageFilter, setStageFilter] = useState('all');
   const [progressFilter, setProgressFilter] = useState('all');
@@ -38,134 +40,167 @@ export default function IncompleteApplications() {
     }, 3500);
   };
 
-  const draftsData = [
+  const schoolDrafts = [
     {
-      id: 1,
-      student: 'Tobi Olamide',
-      initials: 'TO',
-      parent: 'Mr. Olamide',
-      email: 'mr.olamide@example.com',
-      phone: '+234 800 000 0000',
-      progress: 80,
-      stageNumber: 4,
-      stageName: 'Document Uploads',
-      stageDetail: 'Pending Birth Certificate & Medical Form',
-      lastSaved: 'Oct 07, 2026',
+      id: 1, student: 'Tobi Olamide', initials: 'TO', parent: 'Mr. Olamide',
+      email: 'mr.olamide@example.com', phone: '+234 800 000 0000',
+      progress: 80, stageNumber: 4, stageName: 'Document Uploads',
+      stageDetail: 'Pending Birth Certificate & Medical Form', lastSaved: 'Oct 07, 2026',
       program: '2026 Academic Session Admission',
       steps: [
         { num: 1, name: 'Personal Details', status: 'completed' },
         { num: 2, name: 'Parent & Guardian Info', status: 'completed' },
         { num: 3, name: 'Academic Records', status: 'completed' },
         { num: 4, name: 'Document Uploads', status: 'stopped', pending: 'Birth Certificate (PDF), Medical Fitness Report' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'locked' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'locked' },
       ]
     },
     {
-      id: 2,
-      student: 'Emma Johnson',
-      initials: 'EJ',
-      parent: 'Mrs. Johnson',
-      email: 'mrs.johnson@example.com',
-      phone: '+234 811 111 1111',
-      progress: 45,
-      stageNumber: 2,
-      stageName: 'Parent & Guardian Details',
-      stageDetail: 'Emergency Contact & Home Address pending',
-      lastSaved: 'Oct 05, 2026',
+      id: 2, student: 'Emma Johnson', initials: 'EJ', parent: 'Mrs. Johnson',
+      email: 'mrs.johnson@example.com', phone: '+234 811 111 1111',
+      progress: 45, stageNumber: 2, stageName: 'Parent & Guardian Details',
+      stageDetail: 'Emergency Contact & Home Address pending', lastSaved: 'Oct 05, 2026',
       program: 'Staff Recruitment & Onboarding',
       steps: [
         { num: 1, name: 'Personal Details', status: 'completed' },
         { num: 2, name: 'Parent & Guardian Info', status: 'stopped', pending: 'Emergency Contact Phone, Verified Home Address' },
         { num: 3, name: 'Academic Records', status: 'locked' },
         { num: 4, name: 'Document Uploads', status: 'locked' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'locked' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'locked' },
       ]
     },
     {
-      id: 3,
-      student: 'Chioma Uchenna',
-      initials: 'CU',
-      parent: 'Dr. Uchenna',
-      email: 'dr.uchenna@example.com',
-      phone: '+234 822 222 2222',
-      progress: 15,
-      stageNumber: 1,
-      stageName: 'Personal Information',
-      stageDetail: 'Date of Birth & State of Origin incomplete',
-      lastSaved: 'Sep 30, 2026',
+      id: 3, student: 'Chioma Uchenna', initials: 'CU', parent: 'Dr. Uchenna',
+      email: 'dr.uchenna@example.com', phone: '+234 822 222 2222',
+      progress: 15, stageNumber: 1, stageName: 'Personal Information',
+      stageDetail: 'Date of Birth & State of Origin incomplete', lastSaved: 'Sep 30, 2026',
       program: 'Undergraduate Transfer Form',
       steps: [
         { num: 1, name: 'Personal Details', status: 'stopped', pending: 'Date of birth, LGA & State of Origin' },
         { num: 2, name: 'Parent & Guardian Info', status: 'locked' },
         { num: 3, name: 'Academic Records', status: 'locked' },
         { num: 4, name: 'Document Uploads', status: 'locked' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'locked' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'locked' },
       ]
     },
     {
-      id: 4,
-      student: 'Babatunde Raji',
-      initials: 'BR',
-      parent: 'Alhaji Raji',
-      email: 'raji.fam@example.com',
-      phone: '+234 802 333 7777',
-      progress: 90,
-      stageNumber: 5,
-      stageName: 'Fee Payment & Checkout',
-      stageDetail: 'Payment window timed out at Remita gateway',
-      lastSaved: 'Oct 08, 2026',
+      id: 4, student: 'Babatunde Raji', initials: 'BR', parent: 'Alhaji Raji',
+      email: 'raji.fam@example.com', phone: '+234 802 333 7777',
+      progress: 90, stageNumber: 5, stageName: 'Fee Payment & Checkout',
+      stageDetail: 'Payment window timed out at Remita gateway', lastSaved: 'Oct 08, 2026',
       program: 'Pre-Degree Science Entrance',
       steps: [
         { num: 1, name: 'Personal Details', status: 'completed' },
         { num: 2, name: 'Parent & Guardian Info', status: 'completed' },
         { num: 3, name: 'Academic Records', status: 'completed' },
         { num: 4, name: 'Document Uploads', status: 'completed' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'stopped', pending: 'Form Fee Authentication (₦15,000)' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'stopped', pending: 'Form Fee Authentication (₦15,000)' },
       ]
     },
     {
-      id: 5,
-      student: 'Favour Nwosu',
-      initials: 'FN',
-      parent: 'Barr. Nwosu',
-      email: 'barr.nwosu@example.com',
-      phone: '+234 803 888 9999',
-      progress: 60,
-      stageNumber: 3,
-      stageName: 'Academic History',
-      stageDetail: 'Previous school transcript upload missing',
-      lastSaved: 'Oct 04, 2026',
+      id: 5, student: 'Favour Nwosu', initials: 'FN', parent: 'Barr. Nwosu',
+      email: 'barr.nwosu@example.com', phone: '+234 803 888 9999',
+      progress: 60, stageNumber: 3, stageName: 'Academic History',
+      stageDetail: 'Previous school transcript upload missing', lastSaved: 'Oct 04, 2026',
       program: 'Hostel Accommodation Application',
       steps: [
         { num: 1, name: 'Personal Details', status: 'completed' },
         { num: 2, name: 'Parent & Guardian Info', status: 'completed' },
         { num: 3, name: 'Academic Records', status: 'stopped', pending: 'Junior Secondary Transcript & Grade Summary' },
         { num: 4, name: 'Document Uploads', status: 'locked' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'locked' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'locked' },
       ]
     },
     {
-      id: 6,
-      student: 'Daniel Adeleke',
-      initials: 'DA',
-      parent: 'Chief Adeleke',
-      email: 'adeleke.group@example.com',
-      phone: '+234 814 555 4321',
-      progress: 35,
-      stageNumber: 2,
-      stageName: 'Parent & Guardian Details',
-      stageDetail: 'Mother contact number & signature missing',
-      lastSaved: 'Oct 02, 2026',
+      id: 6, student: 'Daniel Adeleke', initials: 'DA', parent: 'Chief Adeleke',
+      email: 'adeleke.group@example.com', phone: '+234 814 555 4321',
+      progress: 35, stageNumber: 2, stageName: 'Parent & Guardian Details',
+      stageDetail: 'Mother contact number & signature missing', lastSaved: 'Oct 02, 2026',
       program: 'Merit-Based Scholarship Application',
       steps: [
         { num: 1, name: 'Personal Details', status: 'completed' },
         { num: 2, name: 'Parent & Guardian Info', status: 'stopped', pending: 'Mother contact phone number, Digital signature' },
         { num: 3, name: 'Academic Records', status: 'locked' },
         { num: 4, name: 'Document Uploads', status: 'locked' },
-        { num: 5, name: 'Fee Payment & Submission', status: 'locked' }
+        { num: 5, name: 'Fee Payment & Submission', status: 'locked' },
       ]
     }
   ];
+
+  const orgDrafts = [
+    {
+      id: 1, student: 'Kemi Adeyemi', initials: 'KA', parent: 'GTBank Foundation',
+      email: 'kemi.a@gtbank.com', phone: '+234 802 600 0001',
+      progress: 75, stageNumber: 4, stageName: 'Document Uploads',
+      stageDetail: 'Updated CV & professional certificates missing', lastSaved: 'Oct 07, 2026',
+      program: 'Graduate Trainee Programme 2026',
+      steps: [
+        { num: 1, name: 'Personal & Contact Info', status: 'completed' },
+        { num: 2, name: 'Work Experience', status: 'completed' },
+        { num: 3, name: 'Academic Qualifications', status: 'completed' },
+        { num: 4, name: 'Document Uploads', status: 'stopped', pending: 'Updated CV (PDF), Professional Certificates' },
+        { num: 5, name: 'Assessment & Submission', status: 'locked' },
+      ]
+    },
+    {
+      id: 2, student: 'Emeka Okafor', initials: 'EO', parent: 'Nestlé Nigeria',
+      email: 'emeka.ok@nestle.com', phone: '+234 811 004 5522',
+      progress: 40, stageNumber: 2, stageName: 'Work Experience',
+      stageDetail: 'Previous employer reference & notice period pending', lastSaved: 'Oct 05, 2026',
+      program: 'Experienced Hire – Supply Chain',
+      steps: [
+        { num: 1, name: 'Personal & Contact Info', status: 'completed' },
+        { num: 2, name: 'Work Experience', status: 'stopped', pending: 'Previous employer reference letter, Current notice period' },
+        { num: 3, name: 'Academic Qualifications', status: 'locked' },
+        { num: 4, name: 'Document Uploads', status: 'locked' },
+        { num: 5, name: 'Assessment & Submission', status: 'locked' },
+      ]
+    },
+    {
+      id: 3, student: 'Aisha Musa', initials: 'AM', parent: 'Access Bank Plc',
+      email: 'aisha.m@accessbank.ng', phone: '+234 803 912 6654',
+      progress: 20, stageNumber: 1, stageName: 'Personal & Contact Info',
+      stageDetail: 'NIN verification & LinkedIn profile URL missing', lastSaved: 'Oct 01, 2026',
+      program: 'Tech Fellowship Cohort 4',
+      steps: [
+        { num: 1, name: 'Personal & Contact Info', status: 'stopped', pending: 'NIN verification, LinkedIn profile URL' },
+        { num: 2, name: 'Work Experience', status: 'locked' },
+        { num: 3, name: 'Academic Qualifications', status: 'locked' },
+        { num: 4, name: 'Document Uploads', status: 'locked' },
+        { num: 5, name: 'Assessment & Submission', status: 'locked' },
+      ]
+    },
+    {
+      id: 4, student: 'Femi Bello', initials: 'FB', parent: 'MTN Nigeria',
+      email: 'femi.bello@mtn.com', phone: '+234 806 330 9981',
+      progress: 90, stageNumber: 5, stageName: 'Online Assessment',
+      stageDetail: 'Assessment link expired before completion', lastSaved: 'Oct 08, 2026',
+      program: 'Summer Internship 2026',
+      steps: [
+        { num: 1, name: 'Personal & Contact Info', status: 'completed' },
+        { num: 2, name: 'Work Experience', status: 'completed' },
+        { num: 3, name: 'Academic Qualifications', status: 'completed' },
+        { num: 4, name: 'Document Uploads', status: 'completed' },
+        { num: 5, name: 'Assessment & Submission', status: 'stopped', pending: 'Online aptitude test (link expired)' },
+      ]
+    },
+    {
+      id: 5, student: 'Rukayat Salami', initials: 'RS', parent: 'Stanbic IBTC',
+      email: 'r.salami@stanbic.com', phone: '+234 817 229 0043',
+      progress: 55, stageNumber: 3, stageName: 'Academic Qualifications',
+      stageDetail: 'Degree certificate & transcript not uploaded', lastSaved: 'Oct 04, 2026',
+      program: 'Community Grant Programme',
+      steps: [
+        { num: 1, name: 'Personal & Contact Info', status: 'completed' },
+        { num: 2, name: 'Work Experience', status: 'completed' },
+        { num: 3, name: 'Academic Qualifications', status: 'stopped', pending: 'Degree certificate, Official academic transcript' },
+        { num: 4, name: 'Document Uploads', status: 'locked' },
+        { num: 5, name: 'Assessment & Submission', status: 'locked' },
+      ]
+    },
+  ];
+
+  const draftsData = isOrganization ? orgDrafts : schoolDrafts;
 
   const filteredDrafts = draftsData.filter(item => {
     const q = search.toLowerCase();
@@ -192,8 +227,8 @@ export default function IncompleteApplications() {
       <div className="header-content">
         <div className="welcome-section">
           <div className="welcome-text">
-            <h1>Incomplete Applications</h1>
-            <h2>Track forms saved as drafts, identify drop-off stages, and send completion reminders</h2>
+            <h1>{terms.incompleteApplications}</h1>
+            <h2>{terms.incompleteSubtitle}</h2>
           </div>
         </div>
       </div>
@@ -205,7 +240,7 @@ export default function IncompleteApplications() {
             <Search size={16} />
             <input 
               type="text" 
-              placeholder="Search by student, parent, email, or stage..."
+              placeholder={isOrganization ? "Search by applicant, organisation, email, or stage..." : "Search by student, parent, email, or stage..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -220,11 +255,11 @@ export default function IncompleteApplications() {
               title="Filter by Drop-Off Stage"
             >
               <option value="all">All Stages</option>
-              <option value="1">Stage 1: Personal Details</option>
-              <option value="2">Stage 2: Parent & Guardian</option>
-              <option value="3">Stage 3: Academic History</option>
+              <option value="1">{isOrganization ? 'Stage 1: Personal & Contact' : 'Stage 1: Personal Details'}</option>
+              <option value="2">{isOrganization ? 'Stage 2: Work Experience' : 'Stage 2: Parent & Guardian'}</option>
+              <option value="3">{isOrganization ? 'Stage 3: Academic Qualifications' : 'Stage 3: Academic History'}</option>
               <option value="4">Stage 4: Document Uploads</option>
-              <option value="5">Stage 5: Fee Payment</option>
+              <option value="5">{isOrganization ? 'Stage 5: Assessment & Submit' : 'Stage 5: Fee Payment'}</option>
             </select>
 
             {/* Filter by Progress % */}
@@ -255,10 +290,10 @@ export default function IncompleteApplications() {
             <thead>
               <tr>
                 <th className="col-sn">S/N</th>
-                <th className="col-student">Student</th>
-                <th className="col-parent">Parent</th>
-                <th className="col-email">Parent Email</th>
-                <th className="col-phone">Parent Phone</th>
+                <th className="col-student">{isOrganization ? 'Applicant' : 'Student'}</th>
+                <th className="col-parent">{isOrganization ? 'Organisation' : 'Parent'}</th>
+                <th className="col-email">{isOrganization ? 'Work Email' : 'Parent Email'}</th>
+                <th className="col-phone">{isOrganization ? 'Contact Phone' : 'Parent Phone'}</th>
                 <th className="col-stage">Stopped At Stage</th>
                 <th className="col-progress">Progress</th>
                 <th className="col-action">Action</th>
@@ -447,7 +482,7 @@ export default function IncompleteApplications() {
                 }}>
                   <Mail size={16} style={{ color: '#0052cc' }} />
                   <div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-light)' }}>Parent Email</div>
+                    <div style={{ fontSize: '10.5px', color: 'var(--text-light)' }}>{isOrganization ? 'Work Email' : 'Parent Email'}</div>
                     <div style={{ fontSize: '12.5px', fontWeight: '500', color: 'var(--text-dark)' }}>{selectedDraft.email}</div>
                   </div>
                 </div>
@@ -462,7 +497,7 @@ export default function IncompleteApplications() {
                 }}>
                   <Phone size={16} style={{ color: '#10b981' }} />
                   <div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-light)' }}>Parent Phone</div>
+                    <div style={{ fontSize: '10.5px', color: 'var(--text-light)' }}>{isOrganization ? 'Contact Phone' : 'Parent Phone'}</div>
                     <div style={{ fontSize: '12.5px', fontWeight: '500', color: 'var(--text-dark)' }}>{selectedDraft.phone}</div>
                   </div>
                 </div>
